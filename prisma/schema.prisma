@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  username   String       @unique
+  password   String
+  email      String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  subject    Subject?     @relation(fields: [subjectId], references: [id])
+  quizResult QuizResult[]
+  subjectId  Int?
+  roleId     Int
+  role       Role         @relation(fields: [roleId], references: [id])
+  profile    Profile?
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  displayName String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User[]
+}
+
+model Profile {
+  id        Int     @id @default(autoincrement())
+  firstName String?
+  lastName  String?
+  image     String?
+  bio       String?
+  userId    Int     @unique
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model Subject {
+  id        Int      @id @default(autoincrement())
+  title     String   @unique
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quiz      Quiz[]
+  user      User[]
+}
+
+model Answer {
+  id              Int      @id @default(autoincrement())
+  text            String
+  isCorrectAnswer Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  questionId      Int
+  question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id        Int      @id @default(autoincrement())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId    Int
+  answers   Answer[]
+}
+
+model Quiz {
+  id         Int          @id @default(autoincrement())
+  title      String       @unique
+  image      String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  questions  Question[]
+  subjectId  Int
+  subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  quizResult QuizResult[]
+}
+
+model QuizResult {
+  id        Int      @id @default(autoincrement())
+  score     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quizId    Int
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model Lecture {
+  id        Int      @id @default(autoincrement())
+  title     String
+  number    Int      @default(autoincrement())
+  content   String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Content {
+  id            Int         @id @default(autoincrement())
+  contentTypeId Int
+  contentType   ContentType @relation(fields: [contentTypeId], references: [id])
+}
+
+model ContentType {
+  id          Int       @id @default(autoincrement())
+  title       String
+  displayName String
+  content     Content[]
+}
