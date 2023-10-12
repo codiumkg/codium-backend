@@ -19,4 +19,8 @@ export class RoleService {
   async createRole(title: string): Promise<Role> {
     return this.prismaService.role.create({ data: { title } });
   }
+
+  async deleteRole(id: number) {
+    return this.prismaService.role.delete({ where: { id } });
+  }
 }

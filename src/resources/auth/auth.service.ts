@@ -46,6 +46,8 @@ export class AuthService {
         user: {
           id: user.id,
           username: user.username,
+          role: user.role,
+          subject: user.subject,
         },
       };
     } catch (e) {
@@ -60,14 +62,13 @@ export class AuthService {
       if (!hash)
         throw new BadRequestException('An error occured while creating a user');
 
-      await this.userService.createUser(user);
+      const newUser = await this.userService.createUser(user);
 
       return {
         message: 'User created successfully!',
         user: {
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          username: newUser.username,
+          role: newUser.roleId,
         },
       };
     } catch (e) {
