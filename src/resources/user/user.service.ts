@@ -12,7 +12,7 @@ export class UserService {
   async getUserByUsername(username: string) {
     return this.prismaService.user.findUnique({
       where: { username },
-      include: { role: true, subject: true },
+      include: { subject: true },
     });
   }
 
@@ -27,7 +27,7 @@ export class UserService {
         password: user.password,
         email: user.email,
         subjectId: user.subjectId,
-        roleId: user.roleId,
+        role: user.role,
       },
     });
 

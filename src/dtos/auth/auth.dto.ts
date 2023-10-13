@@ -1,3 +1,4 @@
+import { Role } from '@prisma/client';
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class LoginDto {
@@ -37,8 +38,7 @@ export class SignupDto {
   @IsNumber()
   subjectId?: number;
 
-  @IsNumber()
-  roleId: number;
+  role: Role;
 
   @IsNotEmpty()
   @IsNumber()

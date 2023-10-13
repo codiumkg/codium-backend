@@ -8,6 +8,7 @@ import { LoginDto, SignupDto } from 'src/dtos/auth/auth.dto';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -62,13 +63,16 @@ export class AuthService {
       if (!hash)
         throw new BadRequestException('An error occured while creating a user');
 
-      const newUser = await this.userService.createUser(user);
+      const newUser = await this.userService.createUser({
+        ...user,
+        role: user.role || Role.STUDENT,
+        password: hash,
+      });
 
       return {
         message: 'User created successfully!',
         user: {
           username: newUser.username,
-          role: newUser.roleId,
         },
       };
     } catch (e) {
