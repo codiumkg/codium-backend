@@ -1,12 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { User } from '@prisma/client';
-import { SignupDto } from 'src/dtos/auth/auth.dto';
+import { SignupDto } from 'src/dtos/auth.dto';
+import { CreateUserDto } from 'src/dtos/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {
     this.prismaService = prismaService;
+  }
+
+  async getUsers() {
+    try {
+      const users = await this.prismaService.user.findMany();
+
+      return users.map((user) => {
+        delete user.password;
+
+        return user;
+      });
+    } catch (e) {
+      return new BadRequestException(e.message);
+    }
   }
 
   async getUserByUsername(username: string) {
@@ -42,6 +57,27 @@ export class UserService {
     });
 
     return newUser;
+  }
+
+  async updateUser(id: number, user: Partial<CreateUserDto>) {
+    const updatedUser = await this.prismaService.user.update({
+      where: { id },
+      data: user,
+    });
+
+    await this.prismaService.profile.update({
+      where: {
+        userId: updatedUser.id,
+      },
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        bio: user.bio,
+        image: user.image,
+      },
+    });
+
+    return updatedUser;
   }
 
   async deleteUser(id: number): Promise<User> {

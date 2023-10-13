@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { LoginDto, SignupDto } from 'src/dtos/auth/auth.dto';
+import { LoginDto, SignupDto } from 'src/dtos/auth.dto';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
