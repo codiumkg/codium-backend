@@ -10,28 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  STUDENT
+  TEACHER
+  MANAGER
+  ADMIN
+}
+
 model User {
   id         Int          @id @default(autoincrement())
   username   String       @unique
   password   String
   email      String?
   createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  updatedAt  DateTime     @default(now())
   subject    Subject?     @relation(fields: [subjectId], references: [id])
   quizResult QuizResult[]
   subjectId  Int?
-  roleId     Int
-  role       Role         @relation(fields: [roleId], references: [id])
+  role       Role         @default(STUDENT)
   profile    Profile?
-}
-
-model Role {
-  id          Int      @id @default(autoincrement())
-  title       String   @unique
-  displayName String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User[]
 }
 
 model Profile {
@@ -49,7 +46,7 @@ model Subject {
   title     String   @unique
   image     String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
   quiz      Quiz[]
   user      User[]
 }
@@ -59,7 +56,7 @@ model Answer {
   text            String
   isCorrectAnswer Boolean  @default(false)
   createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt       DateTime @default(now())
   questionId      Int
   question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
@@ -68,7 +65,7 @@ model Question {
   id        Int      @id @default(autoincrement())
   text      String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
   quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId    Int
   answers   Answer[]
@@ -79,7 +76,7 @@ model Quiz {
   title      String       @unique
   image      String?
   createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  updatedAt  DateTime     @default(now())
   questions  Question[]
   subjectId  Int
   subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
@@ -90,7 +87,7 @@ model QuizResult {
   id        Int      @id @default(autoincrement())
   score     String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
   quizId    Int
   userId    Int
   User      User     @relation(fields: [userId], references: [id])
@@ -104,7 +101,7 @@ model Lecture {
   content   String?
   image     String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 }
 
 model Content {
