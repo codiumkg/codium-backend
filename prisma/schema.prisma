@@ -109,6 +109,7 @@ model Lecture {
 
 model Content {
   id        Int     @id @default(autoincrement())
+  title     String?
   quizId    Int     @unique
   quiz      Quiz    @relation(fields: [quizId], references: [id])
   lectureId Int     @unique

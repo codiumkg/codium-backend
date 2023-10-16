@@ -17,6 +17,7 @@ import { QuizResultController } from './resources/quiz-result/quiz-result.contro
 import { QuestionModule } from './resources/question/question.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { AnswerModule } from './resources/answer/answer.module';
+import { ContentModule } from './resources/content/content.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AnswerModule } from './resources/answer/answer.module';
     QuestionModule,
     AuthModule,
     AnswerModule,
+    ContentModule,
   ],
   controllers: [
     AppController,
