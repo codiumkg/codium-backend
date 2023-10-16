@@ -6,6 +6,9 @@ export class CreateContentDto {
   @IsNumber()
   lectureId: number;
 
+  @IsNumber()
+  sectionId: number;
+
   @IsString()
   @IsNotEmpty()
   title: string;
