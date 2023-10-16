@@ -81,17 +81,19 @@ model Quiz {
   subjectId  Int
   subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   quizResult QuizResult[]
+  content    Content?
 }
 
 model QuizResult {
-  id        Int      @id @default(autoincrement())
-  score     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  quizId    Int
-  userId    Int
-  User      User     @relation(fields: [userId], references: [id])
-  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  id          Int      @id @default(autoincrement())
+  score       String
+  teacherMark String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  quizId      Int
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id])
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
 
 model Lecture {
@@ -102,17 +104,13 @@ model Lecture {
   image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+  Content   Content?
 }
 
 model Content {
-  id            Int         @id @default(autoincrement())
-  contentTypeId Int
-  contentType   ContentType @relation(fields: [contentTypeId], references: [id])
-}
-
-model ContentType {
-  id          Int       @id @default(autoincrement())
-  title       String
-  displayName String
-  content     Content[]
+  id        Int     @id @default(autoincrement())
+  quizId    Int     @unique
+  quiz      Quiz    @relation(fields: [quizId], references: [id])
+  lectureId Int     @unique
+  lecture   Lecture @relation(fields: [lectureId], references: [id])
 }

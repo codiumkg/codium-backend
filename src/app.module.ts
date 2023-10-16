@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserService } from './resources/user/user.service';
-import { AuthService } from './resources/auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthController } from './resources/auth/auth.controller';
 import { PrismaService } from './prisma.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserController } from './resources/user/user.controller';
@@ -16,6 +14,9 @@ import { ProfileController } from './resources/profile/profile.controller';
 import { ProfileService } from './resources/profile/profile.service';
 import { QuizResultService } from './resources/quiz-result/quiz-result.service';
 import { QuizResultController } from './resources/quiz-result/quiz-result.controller';
+import { QuestionModule } from './resources/question/question.module';
+import { AuthModule } from './resources/auth/auth.module';
+import { AnswerModule } from './resources/answer/answer.module';
 
 @Module({
   imports: [
@@ -25,10 +26,12 @@ import { QuizResultController } from './resources/quiz-result/quiz-result.contro
         expiresIn: '30d',
       },
     }),
+    QuestionModule,
+    AuthModule,
+    AnswerModule,
   ],
   controllers: [
     AppController,
-    AuthController,
     UserController,
     SubjectController,
     QuizController,
@@ -38,7 +41,6 @@ import { QuizResultController } from './resources/quiz-result/quiz-result.contro
   providers: [
     AppService,
     UserService,
-    AuthService,
     PrismaService,
     JwtStrategy,
     SubjectService,

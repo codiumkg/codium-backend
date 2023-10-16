@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
-import { CreateSubjectDto } from 'src/dtos/subject.dto';
+import { CreateSubjectDto } from 'src/resources/subject/dto/subject.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';

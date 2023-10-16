@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProfileDto } from 'src/dtos/profile.dto';
+import { CreateProfileDto } from 'src/resources/profile/dto/profile.dto';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -8,23 +8,23 @@ export class ProfileService {
     this.prismaService = prismaService;
   }
 
-  async getProfiles() {
+  async findAll() {
     return this.prismaService.profile.findMany();
   }
 
-  async getProfileById(id: number) {
+  async findOne(id: number) {
     return this.prismaService.profile.findFirst({ where: { id } });
   }
 
-  async createProfile(profile: CreateProfileDto) {
+  async create(profile: CreateProfileDto) {
     return this.prismaService.profile.create({ data: profile });
   }
 
-  async updateProfile(id: number, profile: Partial<CreateProfileDto>) {
+  async update(id: number, profile: Partial<CreateProfileDto>) {
     return this.prismaService.profile.update({ where: { id }, data: profile });
   }
 
-  async deleteProfile(id: number) {
+  async remove(id: number) {
     return this.prismaService.profile.delete({ where: { id } });
   }
 }
