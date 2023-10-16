@@ -18,6 +18,7 @@ import { QuestionModule } from './resources/question/question.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { AnswerModule } from './resources/answer/answer.module';
 import { ContentModule } from './resources/content/content.module';
+import { SectionModule } from './resources/section/section.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ContentModule } from './resources/content/content.module';
     AuthModule,
     AnswerModule,
     ContentModule,
+    SectionModule,
   ],
   controllers: [
     AppController,

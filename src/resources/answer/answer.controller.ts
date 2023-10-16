@@ -27,11 +27,13 @@ export class AnswerController {
     return this.answerService.create(createAnswerDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.answerService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.answerService.findOne(+id);

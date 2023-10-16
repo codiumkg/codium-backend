@@ -108,10 +108,22 @@ model Lecture {
 }
 
 model Content {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String?
-  quizId    Int     @unique
-  quiz      Quiz    @relation(fields: [quizId], references: [id])
-  lectureId Int     @unique
-  lecture   Lecture @relation(fields: [lectureId], references: [id])
+  quizId    Int      @unique
+  quiz      Quiz     @relation(fields: [quizId], references: [id])
+  lectureId Int      @unique
+  lecture   Lecture  @relation(fields: [lectureId], references: [id])
+  sectionId Int
+  section   Section  @relation(fields: [sectionId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Section {
+  id        Int       @id @default(autoincrement())
+  title     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  Content   Content[]
 }
