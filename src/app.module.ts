@@ -26,9 +26,7 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-    }),
+    ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
