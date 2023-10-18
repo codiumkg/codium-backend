@@ -19,9 +19,18 @@ import { AuthModule } from './resources/auth/auth.module';
 import { AnswerModule } from './resources/answer/answer.module';
 import { ContentModule } from './resources/content/content.module';
 import { SectionModule } from './resources/section/section.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
+    MulterModule.register({
+      dest: '../public/uploads',
+    }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
