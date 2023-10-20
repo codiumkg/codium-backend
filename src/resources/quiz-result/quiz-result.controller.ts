@@ -15,7 +15,7 @@ import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import { CreateQuizResultDto } from 'src/resources/quiz-result/dto/quiz-result.dto';
 
-@Controller('api/quiz-results')
+@Controller('quiz-results')
 export class QuizResultController {
   constructor(private readonly quizResultService: QuizResultService) {
     this.quizResultService = quizResultService;

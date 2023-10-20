@@ -22,7 +22,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path from 'path';
 
-@Controller('api/subjects')
+@Controller('subjects')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {
     this.subjectService = subjectService;

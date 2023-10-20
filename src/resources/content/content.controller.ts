@@ -16,7 +16,7 @@ import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 
-@Controller('api/contents')
+@Controller('contents')
 export class ContentController {
   constructor(private readonly contentService: ContentService) {}
 

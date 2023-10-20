@@ -1,19 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserService } from './resources/user/user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaService } from './prisma.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { UserController } from './resources/user/user.controller';
-import { SubjectService } from './resources/subject/subject.service';
-import { SubjectController } from './resources/subject/subject.controller';
-import { QuizController } from './resources/quiz/quiz.controller';
-import { QuizService } from './resources/quiz/quiz.service';
-import { ProfileController } from './resources/profile/profile.controller';
-import { ProfileService } from './resources/profile/profile.service';
-import { QuizResultService } from './resources/quiz-result/quiz-result.service';
-import { QuizResultController } from './resources/quiz-result/quiz-result.controller';
 import { QuestionModule } from './resources/question/question.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { AnswerModule } from './resources/answer/answer.module';
@@ -23,6 +13,11 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule } from '@nestjs/config';
+import { QuizResultModule } from './resources/quiz-result/quiz-result.module';
+import { QuizModule } from './resources/quiz/quiz.module';
+import { ProfileModule } from './resources/profile/profile.module';
+import { UserModule } from './resources/user/user.module';
+import { SubjectModule } from './resources/subject/subject.module';
 
 @Module({
   imports: [
@@ -44,24 +39,13 @@ import { ConfigModule } from '@nestjs/config';
     AnswerModule,
     ContentModule,
     SectionModule,
+    QuizResultModule,
+    QuizModule,
+    ProfileModule,
+    UserModule,
+    SubjectModule,
   ],
-  controllers: [
-    AppController,
-    UserController,
-    SubjectController,
-    QuizController,
-    ProfileController,
-    QuizResultController,
-  ],
-  providers: [
-    AppService,
-    UserService,
-    PrismaService,
-    JwtStrategy,
-    SubjectService,
-    QuizService,
-    ProfileService,
-    QuizResultService,
-  ],
+  controllers: [AppController],
+  providers: [AppService, PrismaService, JwtStrategy],
 })
 export class AppModule {}

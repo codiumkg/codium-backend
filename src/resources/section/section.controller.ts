@@ -16,7 +16,7 @@ import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 
-@Controller('api/sections')
+@Controller('sections')
 export class SectionController {
   constructor(private readonly sectionService: SectionService) {}
 
