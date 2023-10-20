@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { JwtModule } from '@nestjs/jwt';
 import { PrismaService } from './prisma.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { QuestionModule } from './resources/question/question.module';
@@ -27,12 +26,6 @@ import { SubjectModule } from './resources/subject/subject.module';
     }),
     MulterModule.register({
       dest: '../public/uploads',
-    }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: {
-        expiresIn: '30d',
-      },
     }),
     QuestionModule,
     AuthModule,
