@@ -21,7 +21,7 @@ import { SubjectModule } from './resources/subject/subject.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
