@@ -64,6 +64,8 @@ model Answer {
 model Question {
   id        Int      @id @default(autoincrement())
   text      String
+  image     String?
+  tip       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
