@@ -17,6 +17,7 @@ import { QuizModule } from './resources/quiz/quiz.module';
 import { ProfileModule } from './resources/profile/profile.module';
 import { UserModule } from './resources/user/user.module';
 import { SubjectModule } from './resources/subject/subject.module';
+import { RegRequestModule } from './resources/reg-request/reg-request.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { SubjectModule } from './resources/subject/subject.module';
     ProfileModule,
     UserModule,
     SubjectModule,
+    RegRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],
