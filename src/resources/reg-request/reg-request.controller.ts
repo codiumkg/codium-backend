@@ -11,7 +11,7 @@ import { RegRequestService } from './reg-request.service';
 import { CreateRegRequestDto } from './dto/create-reg-request.dto';
 import { UpdateRegRequestDto } from './dto/update-reg-request.dto';
 
-@Controller('reg-request')
+@Controller('reg-requests')
 export class RegRequestController {
   constructor(private readonly regRequestService: RegRequestService) {}
 
