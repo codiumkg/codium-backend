@@ -20,7 +20,7 @@ export class UserService {
         return user;
       });
     } catch (e) {
-      return new BadRequestException(e.message);
+      throw new BadRequestException(e.message);
     }
   }
 

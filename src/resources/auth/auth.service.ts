@@ -52,7 +52,7 @@ export class AuthService {
         },
       };
     } catch (e) {
-      return new BadRequestException(e.message);
+      throw new BadRequestException(e.message);
     }
   }
 
@@ -76,7 +76,7 @@ export class AuthService {
         },
       };
     } catch (e) {
-      return new BadRequestException(e.message);
+      throw new BadRequestException(e.message);
     }
   }
 }
