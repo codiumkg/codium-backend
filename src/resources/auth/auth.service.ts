@@ -1,8 +1,8 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { LoginDto, SignupDto } from 'src/resources/auth/dto/auth.dto';
 import { UserService } from '../user/user.service';
@@ -21,39 +21,35 @@ export class AuthService {
   }
 
   async login({ username, password }: LoginDto) {
-    try {
-      const user = await this.userService.getUserByUsername(username);
+    const user = await this.userService.getUserByUsername(username);
 
-      let token: string;
+    let token: string;
 
-      if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('User not found');
 
-      await bcrypt.compare(password, user.password).then(async (result) => {
-        if (result) {
-          token = await this.jwtService.signAsync({
-            id: user.id,
-            username,
-            role: user.role,
-            subject: user.subject,
-          });
-        } else {
-          throw new ForbiddenException('Password or user did not match');
-        }
-      });
-
-      return {
-        message: 'Authorization successful!',
-        token: token,
-        user: {
+    await bcrypt.compare(password, user.password).then(async (result) => {
+      if (result) {
+        token = await this.jwtService.signAsync({
           id: user.id,
-          username: user.username,
+          username,
           role: user.role,
           subject: user.subject,
-        },
-      };
-    } catch (e) {
-      throw new BadRequestException(e.message);
-    }
+        });
+      } else {
+        throw new UnauthorizedException('Password or user did not match');
+      }
+    });
+
+    return {
+      message: 'Authorization successful!',
+      token: token,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        subject: user.subject,
+      },
+    };
   }
 
   async signup(user: SignupDto) {
