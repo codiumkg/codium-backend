@@ -25,7 +25,7 @@ export class AuthService {
 
     let token: string;
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new UnauthorizedException('User not found');
 
     await bcrypt.compare(password, user.password).then(async (result) => {
       if (result) {
