@@ -1,17 +1,11 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, SignupDto } from 'src/resources/auth/dto/auth.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from './has-roles.decorator';
 import { Role } from '@prisma/client';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -33,7 +27,11 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/status')
-  async status() {
-    return HttpStatus.OK;
+  async status(@Req() req: Request) {
+    const { authorization } = req.headers;
+
+    const token = authorization.replace('Bearer ', '');
+
+    return this.authService.status(token);
   }
 }

@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { LoginDto, SignupDto } from 'src/resources/auth/dto/auth.dto';
@@ -9,6 +8,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
+import { ITokenData } from './interfaces/tokenData';
 
 @Injectable()
 export class AuthService {
@@ -73,6 +73,18 @@ export class AuthService {
       };
     } catch (e) {
       throw new BadRequestException(e.message);
+    }
+  }
+
+  async status(token: string) {
+    try {
+      const data: ITokenData = this.jwtService.decode(token) as ITokenData;
+      return {
+        username: data.username,
+        role: data.role,
+      };
+    } catch (e) {
+      throw new BadRequestException('Failed to check status');
     }
   }
 }
