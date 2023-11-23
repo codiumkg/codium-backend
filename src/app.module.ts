@@ -6,7 +6,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { QuestionModule } from './resources/question/question.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { AnswerModule } from './resources/answer/answer.module';
-import { ContentModule } from './resources/content/content.module';
 import { SectionModule } from './resources/section/section.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -31,7 +30,6 @@ import { RegRequestModule } from './resources/reg-request/reg-request.module';
     QuestionModule,
     AuthModule,
     AnswerModule,
-    ContentModule,
     SectionModule,
     QuizResultModule,
     QuizModule,
