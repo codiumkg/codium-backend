@@ -34,8 +34,8 @@ export class SubjectController {
   }
 
   @Get(':id')
-  async getSubjectById(@Param('id') id: number) {
-    return this.subjectService.getSubjectById(id);
+  async getSubjectById(@Param('id') id: string) {
+    return this.subjectService.getSubjectById(+id);
   }
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
@@ -85,7 +85,7 @@ export class SubjectController {
   )
   @Put(':id')
   async updateSubject(
-    @Param() id: number,
+    @Param() id: string,
     @Body() subject: Partial<CreateSubjectDto>,
     @UploadedFile(
       new ParseFilePipeBuilder()
@@ -97,7 +97,7 @@ export class SubjectController {
     )
     image: Express.Multer.File,
   ) {
-    return this.subjectService.updateSubject(id, {
+    return this.subjectService.updateSubject(+id, {
       ...subject,
       image: image.filename,
     });
@@ -106,7 +106,7 @@ export class SubjectController {
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async deleteSubject(@Param() id: number) {
-    return this.subjectService.deleteSubject(id);
+  async deleteSubject(@Param() id: string) {
+    return this.subjectService.deleteSubject(+id);
   }
 }
