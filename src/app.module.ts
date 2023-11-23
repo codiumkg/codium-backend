@@ -17,6 +17,9 @@ import { ProfileModule } from './resources/profile/profile.module';
 import { UserModule } from './resources/user/user.module';
 import { SubjectModule } from './resources/subject/subject.module';
 import { RegRequestModule } from './resources/reg-request/reg-request.module';
+import { GroupModule } from './resources/group/group.module';
+import { TopicModule } from './resources/topic/topic.module';
+import { LectureModule } from './resources/lecture/lecture.module';
 
 @Module({
   imports: [
@@ -37,6 +40,9 @@ import { RegRequestModule } from './resources/reg-request/reg-request.module';
     UserModule,
     SubjectModule,
     RegRequestModule,
+    GroupModule,
+    TopicModule,
+    LectureModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],
