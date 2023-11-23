@@ -8,7 +8,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
-import { ITokenData } from './interfaces/tokenData';
+import { IUserData } from './interfaces/tokenData';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +33,6 @@ export class AuthService {
           id: user.id,
           username,
           role: user.role,
-          subject: user.subject,
         });
       } else {
         throw new UnauthorizedException('Password or user did not match');
@@ -47,7 +46,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         role: user.role,
-        subject: user.subject,
+        group: user.Group,
       },
     };
   }
@@ -78,10 +77,11 @@ export class AuthService {
 
   async status(token: string) {
     try {
-      const data: ITokenData = this.jwtService.decode(token) as ITokenData;
+      const data: IUserData = this.jwtService.decode(token) as IUserData;
       return {
         username: data.username,
         role: data.role,
+        group: data.group,
       };
     } catch (e) {
       throw new BadRequestException('Failed to check status');

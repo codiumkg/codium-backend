@@ -19,71 +19,80 @@ enum Role {
 
 model User {
   id         Int          @id @default(autoincrement())
-  username   String       @unique
+  username   String       @unique @db.VarChar(30)
   password   String
   email      String?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @default(now())
-  subject    Subject?     @relation(fields: [subjectId], references: [id])
   quizResult QuizResult[]
-  subjectId  Int?
   role       Role         @default(STUDENT)
   profile    Profile?
+  groupId    Int?         @unique
+  Group      Group?       @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model Profile {
   id        Int     @id @default(autoincrement())
-  firstName String?
-  lastName  String?
+  firstName String? @db.VarChar(30)
+  lastName  String? @db.VarChar(30)
+  age       Int?
   image     String?
   bio       String?
   userId    Int     @unique
-  user      User    @relation(fields: [userId], references: [id])
+  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Group {
+  id        Int     @id @default(autoincrement())
+  title     String  @db.VarChar(50)
+  subjectId Int     @unique
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  User      User[]
 }
 
 model Subject {
-  id        Int      @id @default(autoincrement())
-  title     String   @unique
+  id        Int       @id @default(autoincrement())
+  title     String    @unique @db.VarChar(60)
   image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  quiz      Quiz[]
-  user      User[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  Group     Group[]
+  Section   Section[]
 }
 
 model Answer {
   id              Int      @id @default(autoincrement())
-  text            String
+  text            String   @db.VarChar(180)
   isCorrectAnswer Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
-  questionId      Int
-  question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId      Int      @unique
+  Question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Question {
-  id        Int      @id @default(autoincrement())
-  text      String
-  image     String?
-  tip       String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  quizId    Int
-  answers   Answer[]
+  id         Int      @id @default(autoincrement())
+  text       String
+  image      String?
+  tip        String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  Quiz       Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId     Int      @unique
+  openAnswer String?
+  answers    Answer[]
 }
 
 model Quiz {
   id         Int          @id @default(autoincrement())
-  title      String       @unique
+  title      String       @unique @db.VarChar(150)
   image      String?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @default(now())
   questions  Question[]
-  subjectId  Int
-  subject    Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  quizResult QuizResult[]
-  content    Content?
+  QuizResult QuizResult[]
+  Topic      Topic        @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId    Int
 }
 
 model QuizResult {
@@ -92,47 +101,48 @@ model QuizResult {
   teacherMark String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
-  quizId      Int
-  userId      Int
-  User        User     @relation(fields: [userId], references: [id])
-  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId      Int      @unique
+  userId      Int      @unique
+  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
 
 model Lecture {
   id        Int      @id @default(autoincrement())
   title     String
-  number    Int      @default(autoincrement())
   content   String?
+  number    Int      @default(autoincrement())
   image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  Content   Content?
+  topicId   Int      @unique
+  Topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
 }
 
-model Content {
-  id        Int      @id @default(autoincrement())
+model Topic {
+  id        Int       @id @default(autoincrement())
   title     String?
-  quizId    Int      @unique
-  quiz      Quiz     @relation(fields: [quizId], references: [id])
-  lectureId Int      @unique
-  lecture   Lecture  @relation(fields: [lectureId], references: [id])
-  sectionId Int
-  section   Section  @relation(fields: [sectionId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  sectionId Int       @unique
+  Section   Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  Quiz      Quiz[]
+  Lecture   Lecture[]
 }
 
 model Section {
-  id        Int       @id @default(autoincrement())
-  title     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  Content   Content[]
+  id        Int      @id @default(autoincrement())
+  title     String?  @db.VarChar(150)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  subjectId Int      @unique
+  subjects  Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  Topic     Topic[]
 }
 
 model RegRequest {
   id    Int    @id @default(autoincrement())
-  name  String
-  phone String
+  name  String @db.VarChar(60)
+  phone String @db.VarChar(20)
   age   Int
 }

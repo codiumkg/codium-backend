@@ -48,7 +48,7 @@ export class SignupDto {
 
   @IsNumber()
   @IsOptional()
-  subjectId?: number;
+  groupId?: number;
 
   role: Role;
 }

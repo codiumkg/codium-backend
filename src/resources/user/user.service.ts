@@ -27,7 +27,7 @@ export class UserService {
   async getUserByUsername(username: string) {
     return this.prismaService.user.findUnique({
       where: { username },
-      include: { subject: true },
+      include: { Group: true },
     });
   }
 
@@ -41,7 +41,7 @@ export class UserService {
         username: user.username,
         password: user.password,
         email: user.email,
-        subjectId: user.subjectId,
+        groupId: user.groupId,
         role: user.role,
       },
     });

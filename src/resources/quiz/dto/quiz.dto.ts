@@ -11,5 +11,5 @@ export class CreateQuizDto {
 
   @IsNumber()
   @IsNotEmpty()
-  subjectId: number;
+  topicId: number;
 }

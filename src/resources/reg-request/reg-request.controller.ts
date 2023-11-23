@@ -6,10 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { RegRequestService } from './reg-request.service';
 import { CreateRegRequestDto } from './dto/create-reg-request.dto';
 import { UpdateRegRequestDto } from './dto/update-reg-request.dto';
+import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
+import { HasRoles } from '../auth/has-roles.decorator';
+import { Role } from '@prisma/client';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('reg-requests')
 export class RegRequestController {
@@ -20,16 +25,22 @@ export class RegRequestController {
     return this.regRequestService.create(createRegRequestDto);
   }
 
+  @HasRoles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll() {
     return this.regRequestService.findAll();
   }
 
+  @HasRoles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.regRequestService.findOne(+id);
   }
 
+  @HasRoles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -38,6 +49,8 @@ export class RegRequestController {
     return this.regRequestService.update(+id, updateRegRequestDto);
   }
 
+  @HasRoles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.regRequestService.remove(+id);

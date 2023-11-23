@@ -38,7 +38,7 @@ export class CreateUserDto {
 
   @IsNumber()
   @IsOptional()
-  subjectId?: number;
+  groupId?: number;
 
   role: Role;
 }

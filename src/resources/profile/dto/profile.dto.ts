@@ -9,6 +9,10 @@ export class CreateProfileDto {
   @IsOptional()
   lastName?: string;
 
+  @IsNumber()
+  @IsOptional()
+  age?: number;
+
   @IsString()
   @IsOptional()
   image?: string;

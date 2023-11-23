@@ -9,6 +9,14 @@ export class CreateQuestionDto {
   @IsOptional()
   image?: string;
 
+  @IsOptional()
+  @IsString()
+  openAnswer?: string;
+
+  @IsOptional()
+  @IsString()
+  tip?: string;
+
   @IsNumber()
   @IsNotEmpty()
   quizId: number;
