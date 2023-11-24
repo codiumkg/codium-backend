@@ -13,7 +13,9 @@ export class SubjectService {
   }
 
   async getSubjectById(id: number) {
-    return this.prismaService.subject.findFirst({ where: { id } });
+    return this.prismaService.subject.findFirst({
+      where: { id },
+    });
   }
 
   async createSubject(subject: CreateSubjectDto) {

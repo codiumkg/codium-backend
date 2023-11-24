@@ -13,7 +13,10 @@ export class QuizService {
   }
 
   async getQuizById(id: number) {
-    return this.prismaService.quiz.findFirst({ where: { id } });
+    return this.prismaService.quiz.findFirst({
+      where: { id },
+      include: { questions: { include: { answers: true } } },
+    });
   }
 
   async createQuiz(quiz: CreateQuizDto) {

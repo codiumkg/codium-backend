@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -30,7 +32,17 @@ export class GroupController {
 
   @UseGuards(RolesGuard)
   @Get()
-  findAll() {
+  async findAll(@Query('username') username: string) {
+    if (username) {
+      const group = await this.groupService.findByUser(username);
+
+      if (!group) {
+        throw new NotFoundException('Group for the given user not found');
+      }
+
+      return group;
+    }
+
     return this.groupService.findAll();
   }
 

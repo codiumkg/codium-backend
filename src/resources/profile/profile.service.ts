@@ -13,7 +13,10 @@ export class ProfileService {
   }
 
   async findOne(id: number) {
-    return this.prismaService.profile.findFirst({ where: { id } });
+    return this.prismaService.profile.findFirst({
+      where: { id },
+      include: { user: true },
+    });
   }
 
   async create(profile: CreateProfileDto) {

@@ -28,7 +28,7 @@ model User {
   role       Role         @default(STUDENT)
   profile    Profile?
   groupId    Int?         @unique
-  Group      Group?       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group      Group?       @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model Profile {
@@ -39,7 +39,7 @@ model Profile {
   image     String?
   bio       String?
   userId    Int     @unique
-  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Group {
@@ -47,7 +47,7 @@ model Group {
   title     String  @db.VarChar(50)
   subjectId Int     @unique
   subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  User      User[]
+  users     User[]
 }
 
 model Subject {
@@ -56,8 +56,8 @@ model Subject {
   image     String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
-  Group     Group[]
-  Section   Section[]
+  groups    Group[]
+  sections  Section[]
 }
 
 model Answer {
@@ -67,7 +67,7 @@ model Answer {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
   questionId      Int      @unique
-  Question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Question {
@@ -77,22 +77,22 @@ model Question {
   tip        String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
-  Quiz       Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quiz       Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId     Int      @unique
   openAnswer String?
   answers    Answer[]
 }
 
 model Quiz {
-  id         Int          @id @default(autoincrement())
-  title      String       @unique @db.VarChar(150)
-  image      String?
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @default(now())
-  questions  Question[]
-  QuizResult QuizResult[]
-  Topic      Topic        @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  topicId    Int
+  id          Int          @id @default(autoincrement())
+  title       String       @unique @db.VarChar(150)
+  image       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  questions   Question[]
+  quizResults QuizResult[]
+  topic       Topic        @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId     Int
 }
 
 model QuizResult {
@@ -103,8 +103,8 @@ model QuizResult {
   updatedAt   DateTime @default(now())
   quizId      Int      @unique
   userId      Int      @unique
-  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
 
 model Lecture {
@@ -116,7 +116,7 @@ model Lecture {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   topicId   Int      @unique
-  Topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
 }
 
 model Topic {
@@ -126,8 +126,8 @@ model Topic {
   Section   Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
-  Quiz      Quiz[]
-  Lecture   Lecture[]
+  quizzes   Quiz[]
+  lectures  Lecture[]
 }
 
 model Section {
@@ -137,7 +137,7 @@ model Section {
   updatedAt DateTime @default(now())
   subjectId Int      @unique
   subjects  Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  Topic     Topic[]
+  topics    Topic[]
 }
 
 model RegRequest {

@@ -33,6 +33,7 @@ export class AuthService {
           id: user.id,
           username,
           role: user.role,
+          group: user.group,
         });
       } else {
         throw new UnauthorizedException('Password or user did not match');
@@ -46,7 +47,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         role: user.role,
-        group: user.Group,
+        group: user.group,
       },
     };
   }

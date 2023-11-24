@@ -17,8 +17,18 @@ export class GroupService {
     return this.prismaService.group.findMany();
   }
 
+  findByUser(username: string) {
+    return this.prismaService.group.findFirst({
+      include: { subject: true },
+      where: { users: { some: { username } } },
+    });
+  }
+
   findOne(id: number) {
-    return this.prismaService.group.findFirst({ where: { id } });
+    return this.prismaService.group.findFirst({
+      where: { id },
+      include: { subject: true },
+    });
   }
 
   update(id: number, updateGroupDto: UpdateGroupDto) {

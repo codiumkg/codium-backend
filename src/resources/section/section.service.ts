@@ -18,7 +18,9 @@ export class SectionService {
   }
 
   findOne(id: number) {
-    return this.prismaService.section.findFirst({ where: { id } });
+    return this.prismaService.section.findFirst({
+      where: { id },
+    });
   }
 
   update(id: number, section: UpdateSectionDto) {

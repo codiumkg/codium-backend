@@ -14,11 +14,14 @@ export class QuestionService {
   }
 
   findAll() {
-    return this.prismaService.question.findMany();
+    return this.prismaService.question.findMany({ include: { answers: true } });
   }
 
   findOne(id: number) {
-    return this.prismaService.question.findFirst({ where: { id } });
+    return this.prismaService.question.findFirst({
+      where: { id },
+      include: { answers: true },
+    });
   }
 
   update(id: number, question: UpdateQuestionDto) {

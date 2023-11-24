@@ -18,7 +18,9 @@ export class TopicService {
   }
 
   findOne(id: number) {
-    return this.prismaService.topic.findFirst({ where: { id } });
+    return this.prismaService.topic.findFirst({
+      where: { id },
+    });
   }
 
   update(id: number, updateTopicDto: UpdateTopicDto) {
