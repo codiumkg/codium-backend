@@ -18,7 +18,7 @@ import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 
 @UseGuards(JwtAuthGuard)
-@Controller('lecture')
+@Controller('lectures')
 export class LectureController {
   constructor(private readonly lectureService: LectureService) {}
 
