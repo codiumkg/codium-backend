@@ -17,6 +17,12 @@ export class SectionService {
     return this.prismaService.section.findMany();
   }
 
+  findAllBySubject(subjectId: number) {
+    return this.prismaService.section.findMany({
+      where: { subjectId },
+    });
+  }
+
   findOne(id: number) {
     return this.prismaService.section.findFirst({
       where: { id },
