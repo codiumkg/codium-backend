@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
@@ -23,7 +24,11 @@ export class QuizController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getQuizzes() {
+  async getQuizzes(@Query('topicId') topicId: string) {
+    if (topicId) {
+      return this.quizService.findAllByTopic(+topicId);
+    }
+
     return this.quizService.getQuizzes();
   }
 

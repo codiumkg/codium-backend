@@ -17,6 +17,10 @@ export class LectureService {
     return this.prismaService.lecture.findMany();
   }
 
+  findAllByTopic(topicId: number) {
+    return this.prismaService.lecture.findMany({ where: { topicId } });
+  }
+
   findOne(id: number) {
     return this.prismaService.lecture.findFirst({ where: { id } });
   }

@@ -12,6 +12,10 @@ export class QuizService {
     return this.prismaService.quiz.findMany();
   }
 
+  async findAllByTopic(topicId: number) {
+    return this.prismaService.quiz.findMany({ where: { topicId } });
+  }
+
   async getQuizById(id: number) {
     return this.prismaService.quiz.findFirst({
       where: { id },

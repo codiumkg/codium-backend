@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
 import { CreateTopicDto } from './dto/create-topic.dto';
@@ -29,7 +30,11 @@ export class TopicController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('sectionId') sectionId: string) {
+    if (sectionId) {
+      return this.topicService.findAllBySection(+sectionId);
+    }
+
     return this.topicService.findAll();
   }
 

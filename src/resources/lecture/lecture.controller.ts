@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { LectureService } from './lecture.service';
 import { CreateLectureDto } from './dto/create-lecture.dto';
@@ -29,7 +30,10 @@ export class LectureController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('topicId') topicId: string) {
+    if (topicId) {
+      return this.lectureService.findAllByTopic(+topicId);
+    }
     return this.lectureService.findAll();
   }
 

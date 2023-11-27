@@ -12,6 +12,12 @@ export class ProfileService {
     return this.prismaService.profile.findMany();
   }
 
+  async findByUser(username: string) {
+    return this.prismaService.profile.findFirst({
+      where: { user: { username } },
+    });
+  }
+
   async findOne(id: number) {
     return this.prismaService.profile.findFirst({
       where: { id },

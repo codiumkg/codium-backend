@@ -8,8 +8,10 @@ export class QuizResultService {
     this.prismaService = prismaService;
   }
 
-  async getAll() {
-    return this.prismaService.quizResult.findMany();
+  async getAll({ quizId, userId }: { quizId?: number; userId?: number }) {
+    return this.prismaService.quizResult.findMany({
+      where: { quizId, userId },
+    });
   }
 
   async getById(id: number) {

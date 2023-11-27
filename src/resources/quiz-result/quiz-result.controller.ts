@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { QuizResultService } from './quiz-result.service';
@@ -23,8 +24,11 @@ export class QuizResultController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAll() {
-    return this.quizResultService.getAll();
+  async getAll(@Query() query: { quizId: string; userId: string }) {
+    return this.quizResultService.getAll({
+      quizId: +query.quizId || undefined,
+      userId: +query.userId || undefined,
+    });
   }
 
   @UseGuards(JwtAuthGuard)
