@@ -34,4 +34,14 @@ export class AuthController {
 
     return this.authService.status(token);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/userdata')
+  async userdata(@Req() req: Request) {
+    const { authorization } = req.headers;
+
+    const token = authorization.replace('Bearer ', '');
+
+    return this.authService.status(token);
+  }
 }
