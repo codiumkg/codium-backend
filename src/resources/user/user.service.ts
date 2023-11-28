@@ -27,7 +27,7 @@ export class UserService {
   async getUserByUsername(username: string) {
     return this.prismaService.user.findUnique({
       where: { username },
-      include: { group: true },
+      include: { group: { include: { subject: true } } },
     });
   }
 
