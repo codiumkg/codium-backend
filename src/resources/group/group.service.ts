@@ -16,6 +16,7 @@ export class GroupService {
 
   findAll(offset?: number, limit?: number) {
     return this.prismaService.group.findMany({
+      include: { subject: true },
       ...paginationOptions(offset, limit),
     });
   }

@@ -11,6 +11,7 @@ export class QuizService {
 
   async getQuizzes(offset?: number, limit?: number) {
     return this.prismaService.quiz.findMany({
+      include: { topic: true },
       ...paginationOptions(offset, limit),
     });
   }
@@ -18,6 +19,7 @@ export class QuizService {
   async findAllByTopic(topicId: number, offset?: number, limit?: number) {
     return this.prismaService.quiz.findMany({
       where: { topicId },
+      include: { topic: true },
       ...paginationOptions(offset, limit),
     });
   }
@@ -25,7 +27,7 @@ export class QuizService {
   async getQuizById(id: number) {
     return this.prismaService.quiz.findFirst({
       where: { id },
-      include: { questions: { include: { answers: true } } },
+      include: { questions: { include: { answers: true } }, topic: true },
     });
   }
 

@@ -16,6 +16,7 @@ export class LectureService {
 
   findAll(offset?: number, limit?: number) {
     return this.prismaService.lecture.findMany({
+      include: { topic: true },
       ...paginationOptions(offset, limit),
     });
   }
@@ -23,12 +24,16 @@ export class LectureService {
   findAllByTopic(topicId: number, offset?: number, limit?: number) {
     return this.prismaService.lecture.findMany({
       where: { topicId },
+      include: { topic: true },
       ...paginationOptions(offset, limit),
     });
   }
 
   findOne(id: number) {
-    return this.prismaService.lecture.findFirst({ where: { id } });
+    return this.prismaService.lecture.findFirst({
+      where: { id },
+      include: { topic: true },
+    });
   }
 
   update(id: number, updateLectureDto: UpdateLectureDto) {

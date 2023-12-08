@@ -16,7 +16,7 @@ export class QuestionService {
 
   findAll(offset?: number, limit?: number) {
     return this.prismaService.question.findMany({
-      include: { answers: true },
+      include: { answers: true, quiz: true },
       ...paginationOptions(offset, limit),
     });
   }
@@ -24,7 +24,7 @@ export class QuestionService {
   findOne(id: number) {
     return this.prismaService.question.findFirst({
       where: { id },
-      include: { answers: true },
+      include: { answers: true, quiz: true },
     });
   }
 

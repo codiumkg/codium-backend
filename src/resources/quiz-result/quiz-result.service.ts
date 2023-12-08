@@ -22,6 +22,7 @@ export class QuizResultService {
   }) {
     return this.prismaService.quizResult.findMany({
       where: { quizId, userId },
+      include: { quiz: true },
       ...paginationOptions(offset, limit),
     });
   }

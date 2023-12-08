@@ -16,6 +16,7 @@ export class TopicService {
 
   findAll(offset?: number, limit?: number) {
     return this.prismaService.topic.findMany({
+      include: { section: true },
       ...paginationOptions(offset, limit),
     });
   }
@@ -23,12 +24,14 @@ export class TopicService {
   findAllBySection(sectionId: number, offset?: number, limit?: number) {
     return this.prismaService.topic.findMany({
       where: { sectionId },
+      include: { section: true },
       ...paginationOptions(offset, limit),
     });
   }
 
   findOne(id: number) {
     return this.prismaService.topic.findFirst({
+      include: { section: true },
       where: { id },
     });
   }

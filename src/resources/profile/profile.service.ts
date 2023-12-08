@@ -11,12 +11,14 @@ export class ProfileService {
 
   async findAll(offset?: number, limit?: number) {
     return this.prismaService.profile.findMany({
+      include: { user: true },
       ...paginationOptions(offset, limit),
     });
   }
 
   async findByUser(username: string) {
     return this.prismaService.profile.findFirst({
+      include: { user: true },
       where: { user: { username } },
     });
   }

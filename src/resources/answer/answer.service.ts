@@ -16,12 +16,16 @@ export class AnswerService {
 
   findAll(offset?: number, limit?: number) {
     return this.prismaService.answer.findMany({
+      include: { question: true },
       ...paginationOptions(offset, limit),
     });
   }
 
   findOne(id: number) {
-    return this.prismaService.answer.findFirst({ where: { id } });
+    return this.prismaService.answer.findFirst({
+      where: { id },
+      include: { question: true },
+    });
   }
 
   update(id: number, answer: UpdateAnswerDto) {
