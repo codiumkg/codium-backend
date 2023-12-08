@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AnswerService } from './answer.service';
 import { CreateAnswerDto } from './dto/create-answer.dto';
@@ -15,6 +16,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('answers')
 export class AnswerController {
@@ -29,8 +31,8 @@ export class AnswerController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.answerService.findAll();
+  findAll(@Query() { offset, limit }: PaginationParams) {
+    return this.answerService.findAll(+offset, +limit);
   }
 
   @UseGuards(JwtAuthGuard)

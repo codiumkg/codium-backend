@@ -9,6 +9,7 @@ import {
   ParseFilePipeBuilder,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -22,6 +23,7 @@ import { CreateProfileDto } from 'src/resources/profile/dto/profile.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path from 'path';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('profiles')
 export class ProfileController {
@@ -31,8 +33,8 @@ export class ProfileController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAll() {
-    return this.profileService.findAll();
+  async getAll(@Query() { offset, limit }: PaginationParams) {
+    return this.profileService.findAll(+offset, +limit);
   }
 
   @UseGuards(JwtAuthGuard)

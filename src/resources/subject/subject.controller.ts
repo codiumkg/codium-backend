@@ -8,6 +8,7 @@ import {
   ParseFilePipeBuilder,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,6 +22,7 @@ import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path from 'path';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('subjects')
 export class SubjectController {
@@ -28,11 +30,14 @@ export class SubjectController {
     this.subjectService = subjectService;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async getSubjects() {
-    return this.subjectService.getSubjects();
+  async getSubjects(@Query() { offset, limit }: PaginationParams) {
+    console.log(offset, limit);
+    return this.subjectService.getSubjects(+offset, +limit);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getSubjectById(@Param('id') id: string) {
     return this.subjectService.getSubjectById(+id);

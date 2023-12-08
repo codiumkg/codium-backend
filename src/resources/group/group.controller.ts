@@ -17,6 +17,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @UseGuards(JwtAuthGuard)
 @Controller('groups')
@@ -32,9 +33,16 @@ export class GroupController {
 
   @UseGuards(RolesGuard)
   @Get()
-  async findAll(@Query('username') username: string) {
+  async findAll(
+    @Query('username') username: string,
+    @Query() { offset, limit }: PaginationParams,
+  ) {
     if (username) {
-      const group = await this.groupService.findByUser(username);
+      const group = await this.groupService.findByUser(
+        username,
+        +offset,
+        +limit,
+      );
 
       if (!group) {
         throw new NotFoundException('Group for the given user not found');
@@ -43,7 +51,7 @@ export class GroupController {
       return group;
     }
 
-    return this.groupService.findAll();
+    return this.groupService.findAll(+offset, +limit);
   }
 
   @Get(':id')

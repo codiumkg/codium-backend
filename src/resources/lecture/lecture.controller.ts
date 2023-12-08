@@ -16,6 +16,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @UseGuards(JwtAuthGuard)
 @Controller('lectures')
@@ -30,11 +31,14 @@ export class LectureController {
   }
 
   @Get()
-  findAll(@Query('topicId') topicId: string) {
+  findAll(
+    @Query('topicId') topicId: string,
+    @Query() { offset, limit }: PaginationParams,
+  ) {
     if (topicId) {
-      return this.lectureService.findAllByTopic(+topicId);
+      return this.lectureService.findAllByTopic(+topicId, +offset, +limit);
     }
-    return this.lectureService.findAll();
+    return this.lectureService.findAll(+offset, +limit);
   }
 
   @Get(':id')

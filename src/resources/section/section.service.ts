@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
 import { PrismaService } from 'src/prisma.service';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class SectionService {
@@ -13,13 +14,16 @@ export class SectionService {
     return this.prismaService.section.create({ data: section });
   }
 
-  findAll() {
-    return this.prismaService.section.findMany();
+  findAll(offset?: number, limit?: number) {
+    return this.prismaService.section.findMany({
+      ...paginationOptions(offset, limit),
+    });
   }
 
-  findAllBySubject(subjectId: number) {
+  findAllBySubject(subjectId: number, offset?: number, limit?: number) {
     return this.prismaService.section.findMany({
       where: { subjectId },
+      ...paginationOptions(offset, limit),
     });
   }
 

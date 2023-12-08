@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { User } from '@prisma/client';
 import { SignupDto } from 'src/resources/auth/dto/auth.dto';
 import { CreateUserDto } from 'src/resources/user/dto/user.dto';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class UserService {
@@ -10,9 +11,11 @@ export class UserService {
     this.prismaService = prismaService;
   }
 
-  async getUsers() {
+  async getUsers(offset?: number, limit?: number) {
     try {
-      const users = await this.prismaService.user.findMany();
+      const users = await this.prismaService.user.findMany({
+        ...paginationOptions(offset, limit),
+      });
 
       return users.map((user) => {
         delete user.password;

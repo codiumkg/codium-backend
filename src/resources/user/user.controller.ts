@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('users')
 export class UserController {
@@ -24,8 +26,8 @@ export class UserController {
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  async getUsers() {
-    return this.userService.getUsers();
+  async getUsers(@Query() { offset, limit }: PaginationParams) {
+    return this.userService.getUsers(+offset, +limit);
   }
 
   @HasRoles(Role.ADMIN)

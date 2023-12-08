@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { SectionService } from './section.service';
 import { CreateSectionDto } from './dto/create-section.dto';
@@ -19,6 +20,7 @@ import { Role } from '@prisma/client';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { IUserData } from '../auth/interfaces/tokenData';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('sections')
 export class SectionController {
@@ -36,7 +38,7 @@ export class SectionController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Req() req: Request) {
+  findAll(@Req() req: Request, @Query() { offset, limit }: PaginationParams) {
     const { authorization } = req.headers;
 
     const token = authorization.replace('Bearer ', '');
@@ -44,10 +46,14 @@ export class SectionController {
     const userdata: IUserData = this.jwtService.decode(token) as IUserData;
 
     if (userdata.group) {
-      return this.sectionService.findAllBySubject(userdata.group.subjectId);
+      return this.sectionService.findAllBySubject(
+        userdata.group.subjectId,
+        +offset,
+        +limit,
+      );
     }
 
-    return this.sectionService.findAll();
+    return this.sectionService.findAll(+offset, +limit);
   }
 
   @UseGuards(JwtAuthGuard)

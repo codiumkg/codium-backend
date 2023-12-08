@@ -16,6 +16,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @UseGuards(JwtAuthGuard)
 @Controller('topics')
@@ -30,12 +31,15 @@ export class TopicController {
   }
 
   @Get()
-  findAll(@Query('sectionId') sectionId: string) {
+  findAll(
+    @Query('sectionId') sectionId: string,
+    @Query() { offset, limit }: PaginationParams,
+  ) {
     if (sectionId) {
-      return this.topicService.findAllBySection(+sectionId);
+      return this.topicService.findAllBySection(+sectionId, +offset, +limit);
     }
 
-    return this.topicService.findAll();
+    return this.topicService.findAll(+offset, +limit);
   }
 
   @Get(':id')

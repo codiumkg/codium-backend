@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateQuizDto } from 'src/resources/quiz/dto/quiz.dto';
 import { PrismaService } from 'src/prisma.service';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class QuizService {
@@ -8,12 +9,17 @@ export class QuizService {
     this.prismaService = prismaService;
   }
 
-  async getQuizzes() {
-    return this.prismaService.quiz.findMany();
+  async getQuizzes(offset?: number, limit?: number) {
+    return this.prismaService.quiz.findMany({
+      ...paginationOptions(offset, limit),
+    });
   }
 
-  async findAllByTopic(topicId: number) {
-    return this.prismaService.quiz.findMany({ where: { topicId } });
+  async findAllByTopic(topicId: number, offset?: number, limit?: number) {
+    return this.prismaService.quiz.findMany({
+      where: { topicId },
+      ...paginationOptions(offset, limit),
+    });
   }
 
   async getQuizById(id: number) {

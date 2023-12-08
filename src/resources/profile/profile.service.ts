@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProfileDto } from 'src/resources/profile/dto/profile.dto';
 import { PrismaService } from 'src/prisma.service';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class ProfileService {
@@ -8,8 +9,10 @@ export class ProfileService {
     this.prismaService = prismaService;
   }
 
-  async findAll() {
-    return this.prismaService.profile.findMany();
+  async findAll(offset?: number, limit?: number) {
+    return this.prismaService.profile.findMany({
+      ...paginationOptions(offset, limit),
+    });
   }
 
   async findByUser(username: string) {

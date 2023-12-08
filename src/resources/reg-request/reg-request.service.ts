@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateRegRequestDto } from './dto/create-reg-request.dto';
 import { UpdateRegRequestDto } from './dto/update-reg-request.dto';
 import { PrismaService } from 'src/prisma.service';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class RegRequestService {
@@ -11,8 +12,10 @@ export class RegRequestService {
     return this.prismaService.regRequest.create({ data: createRegRequestDto });
   }
 
-  findAll() {
-    return this.prismaService.regRequest.findMany();
+  findAll(offset?: number, limit?: number) {
+    return this.prismaService.regRequest.findMany({
+      ...paginationOptions(offset, limit),
+    });
   }
 
   findOne(id: number) {

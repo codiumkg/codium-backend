@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateLectureDto } from './dto/create-lecture.dto';
 import { UpdateLectureDto } from './dto/update-lecture.dto';
 import { PrismaService } from 'src/prisma.service';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class LectureService {
@@ -13,12 +14,17 @@ export class LectureService {
     return this.prismaService.lecture.create({ data: createLectureDto });
   }
 
-  findAll() {
-    return this.prismaService.lecture.findMany();
+  findAll(offset?: number, limit?: number) {
+    return this.prismaService.lecture.findMany({
+      ...paginationOptions(offset, limit),
+    });
   }
 
-  findAllByTopic(topicId: number) {
-    return this.prismaService.lecture.findMany({ where: { topicId } });
+  findAllByTopic(topicId: number, offset?: number, limit?: number) {
+    return this.prismaService.lecture.findMany({
+      where: { topicId },
+      ...paginationOptions(offset, limit),
+    });
   }
 
   findOne(id: number) {

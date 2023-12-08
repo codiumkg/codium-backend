@@ -15,6 +15,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('quizzes')
 export class QuizController {
@@ -24,12 +25,15 @@ export class QuizController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getQuizzes(@Query('topicId') topicId: string) {
+  async getQuizzes(
+    @Query('topicId') topicId: string,
+    @Query() { offset, limit }: PaginationParams,
+  ) {
     if (topicId) {
-      return this.quizService.findAllByTopic(+topicId);
+      return this.quizService.findAllByTopic(+topicId, +offset, +limit);
     }
 
-    return this.quizService.getQuizzes();
+    return this.quizService.getQuizzes(+offset, +limit);
   }
 
   @UseGuards(JwtAuthGuard)

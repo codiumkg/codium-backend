@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'src/prisma.service';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class GroupService {
@@ -13,14 +14,17 @@ export class GroupService {
     return this.prismaService.group.create({ data: createGroupDto });
   }
 
-  findAll() {
-    return this.prismaService.group.findMany();
+  findAll(offset?: number, limit?: number) {
+    return this.prismaService.group.findMany({
+      ...paginationOptions(offset, limit),
+    });
   }
 
-  findByUser(username: string) {
+  findByUser(username: string, offset?: number, limit?: number) {
     return this.prismaService.group.findFirst({
       include: { subject: true },
       where: { users: { some: { username } } },
+      ...paginationOptions(offset, limit),
     });
   }
 

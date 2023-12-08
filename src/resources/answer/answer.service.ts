@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { PrismaService } from 'src/prisma.service';
+import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class AnswerService {
@@ -13,8 +14,10 @@ export class AnswerService {
     return this.prismaService.answer.create({ data: answer });
   }
 
-  findAll() {
-    return this.prismaService.answer.findMany();
+  findAll(offset?: number, limit?: number) {
+    return this.prismaService.answer.findMany({
+      ...paginationOptions(offset, limit),
+    });
   }
 
   findOne(id: number) {

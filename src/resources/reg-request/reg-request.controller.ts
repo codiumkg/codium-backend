@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { RegRequestService } from './reg-request.service';
 import { CreateRegRequestDto } from './dto/create-reg-request.dto';
@@ -15,6 +16,7 @@ import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('reg-requests')
 export class RegRequestController {
@@ -28,8 +30,8 @@ export class RegRequestController {
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  findAll() {
-    return this.regRequestService.findAll();
+  findAll(@Query() { offset, limit }: PaginationParams) {
+    return this.regRequestService.findAll(+offset, +limit);
   }
 
   @HasRoles(Role.ADMIN, Role.MANAGER)

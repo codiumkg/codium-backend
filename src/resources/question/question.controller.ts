@@ -11,6 +11,7 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -22,6 +23,7 @@ import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path from 'path';
+import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('questions')
 export class QuestionController {
@@ -58,8 +60,8 @@ export class QuestionController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.questionService.findAll();
+  findAll(@Query() { offset, limit }: PaginationParams) {
+    return this.questionService.findAll(+offset, +limit);
   }
 
   @UseGuards(JwtAuthGuard)
