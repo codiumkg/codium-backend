@@ -32,9 +32,11 @@ export class SubjectController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getSubjects(@Query() { offset, limit }: PaginationParams) {
-    console.log(offset, limit);
-    return this.subjectService.getSubjects(+offset, +limit);
+  async getSubjects(
+    @Query() { offset, limit }: PaginationParams,
+    @Query('title') title: string,
+  ) {
+    return this.subjectService.getSubjects(+offset, +limit, title);
   }
 
   @UseGuards(JwtAuthGuard)

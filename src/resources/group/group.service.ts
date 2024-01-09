@@ -14,9 +14,10 @@ export class GroupService {
     return this.prismaService.group.create({ data: createGroupDto });
   }
 
-  findAll(offset?: number, limit?: number) {
+  findAll(offset?: number, limit?: number, title?: string) {
     return this.prismaService.group.findMany({
       include: { subject: true },
+      ...(title && { where: { title } }),
       ...paginationOptions(offset, limit),
     });
   }

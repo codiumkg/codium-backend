@@ -38,7 +38,11 @@ export class SectionController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Req() req: Request, @Query() { offset, limit }: PaginationParams) {
+  findAll(
+    @Req() req: Request,
+    @Query() { offset, limit }: PaginationParams,
+    @Query('title') title: string,
+  ) {
     const { authorization } = req.headers;
 
     const token = authorization.replace('Bearer ', '');
@@ -50,10 +54,11 @@ export class SectionController {
         userdata.group.subjectId,
         +offset,
         +limit,
+        title,
       );
     }
 
-    return this.sectionService.findAll(+offset, +limit);
+    return this.sectionService.findAll(+offset, +limit, title);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -34,12 +34,18 @@ export class TopicController {
   findAll(
     @Query('sectionId') sectionId: string,
     @Query() { offset, limit }: PaginationParams,
+    @Query('title') title: string,
   ) {
     if (sectionId) {
-      return this.topicService.findAllBySection(+sectionId, +offset, +limit);
+      return this.topicService.findAllBySection(
+        +sectionId,
+        +offset,
+        +limit,
+        title,
+      );
     }
 
-    return this.topicService.findAll(+offset, +limit);
+    return this.topicService.findAll(+offset, +limit, title);
   }
 
   @Get(':id')

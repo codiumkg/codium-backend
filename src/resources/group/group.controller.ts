@@ -36,6 +36,7 @@ export class GroupController {
   async findAll(
     @Query('username') username: string,
     @Query() { offset, limit }: PaginationParams,
+    @Query('title') title: string,
   ) {
     if (username) {
       const group = await this.groupService.findByUser(
@@ -51,7 +52,7 @@ export class GroupController {
       return group;
     }
 
-    return this.groupService.findAll(+offset, +limit);
+    return this.groupService.findAll(+offset, +limit, title);
   }
 
   @Get(':id')

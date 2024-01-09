@@ -34,11 +34,17 @@ export class LectureController {
   findAll(
     @Query('topicId') topicId: string,
     @Query() { offset, limit }: PaginationParams,
+    @Query('title') title: string,
   ) {
     if (topicId) {
-      return this.lectureService.findAllByTopic(+topicId, +offset, +limit);
+      return this.lectureService.findAllByTopic(
+        +topicId,
+        +offset,
+        +limit,
+        title,
+      );
     }
-    return this.lectureService.findAll(+offset, +limit);
+    return this.lectureService.findAll(+offset, +limit, title);
   }
 
   @Get(':id')

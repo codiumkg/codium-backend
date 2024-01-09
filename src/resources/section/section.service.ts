@@ -14,17 +14,24 @@ export class SectionService {
     return this.prismaService.section.create({ data: section });
   }
 
-  findAll(offset?: number, limit?: number) {
+  findAll(offset?: number, limit?: number, title?: string) {
     return this.prismaService.section.findMany({
       include: { subject: true },
+      ...(title && { where: { title } }),
       ...paginationOptions(offset, limit),
     });
   }
 
-  findAllBySubject(subjectId: number, offset?: number, limit?: number) {
+  findAllBySubject(
+    subjectId: number,
+    offset?: number,
+    limit?: number,
+    title?: string,
+  ) {
     return this.prismaService.section.findMany({
       where: { subjectId },
       include: { subject: true },
+      ...(title && { where: { title } }),
       ...paginationOptions(offset, limit),
     });
   }

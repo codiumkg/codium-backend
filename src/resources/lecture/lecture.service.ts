@@ -14,17 +14,24 @@ export class LectureService {
     return this.prismaService.lecture.create({ data: createLectureDto });
   }
 
-  findAll(offset?: number, limit?: number) {
+  findAll(offset?: number, limit?: number, title?: string) {
     return this.prismaService.lecture.findMany({
       include: { topic: true },
+      ...(title && { where: { title } }),
       ...paginationOptions(offset, limit),
     });
   }
 
-  findAllByTopic(topicId: number, offset?: number, limit?: number) {
+  findAllByTopic(
+    topicId: number,
+    offset?: number,
+    limit?: number,
+    title?: string,
+  ) {
     return this.prismaService.lecture.findMany({
       where: { topicId },
       include: { topic: true },
+      ...(title && { where: { title } }),
       ...paginationOptions(offset, limit),
     });
   }

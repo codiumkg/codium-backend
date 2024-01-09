@@ -9,8 +9,9 @@ export class SubjectService {
     this.prismaService = prismaService;
   }
 
-  async getSubjects(offset?: number, limit?: number) {
+  async getSubjects(offset?: number, limit?: number, title?: string) {
     return this.prismaService.subject.findMany({
+      ...(title && { where: { title } }),
       ...paginationOptions(offset, limit),
     });
   }
