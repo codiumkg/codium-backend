@@ -20,6 +20,7 @@ import { RegRequestModule } from './resources/reg-request/reg-request.module';
 import { GroupModule } from './resources/group/group.module';
 import { TopicModule } from './resources/topic/topic.module';
 import { LectureModule } from './resources/lecture/lecture.module';
+import { ImageModule } from './resources/image/image.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { LectureModule } from './resources/lecture/lecture.module';
     GroupModule,
     TopicModule,
     LectureModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],

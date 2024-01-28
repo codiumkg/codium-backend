@@ -7,10 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  UseInterceptors,
-  UploadedFile,
-  ParseFilePipeBuilder,
-  HttpStatus,
   Query,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
@@ -20,9 +16,6 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import path from 'path';
 import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('questions')
@@ -31,31 +24,9 @@ export class QuestionController {
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        filename: (req, file, cb) => {
-          const name = Date.now().toString() + path.extname(file.originalname);
-
-          cb(null, name);
-        },
-      }),
-    }),
-  )
   @Post()
-  create(
-    @Body() question: CreateQuestionDto,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({ fileType: '.(png|jpeg|jpg)' })
-        .addMaxSizeValidator({ maxSize: 1024 * 1024 * 8 })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    image: Express.Multer.File,
-  ) {
-    return this.questionService.create({ ...question, image: image.filename });
+  create(@Body() question: CreateQuestionDto) {
+    return this.questionService.create(question);
   }
 
   @UseGuards(JwtAuthGuard)

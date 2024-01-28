@@ -1,18 +1,14 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
-  ParseFilePipeBuilder,
   Post,
   Put,
   Query,
   UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -20,9 +16,6 @@ import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { CreateProfileDto } from 'src/resources/profile/dto/profile.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import path from 'path';
 import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('profiles')
@@ -45,46 +38,13 @@ export class ProfileController {
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        filename: (req, file, cb) => {
-          const name = Date.now().toString() + path.extname(file.originalname);
-
-          cb(null, name);
-        },
-      }),
-    }),
-  )
   @Post()
-  async create(
-    @Body() profile: CreateProfileDto,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({ fileType: '.(png|jpeg|jpg)' })
-        .addMaxSizeValidator({ maxSize: 1024 * 1024 * 8 })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    image: Express.Multer.File,
-  ) {
-    return this.profileService.create({ ...profile, image: image.filename });
+  async create(@Body() profile: CreateProfileDto) {
+    return this.profileService.create(profile);
   }
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        filename: (req, file, cb) => {
-          const name = Date.now().toString() + path.extname(file.originalname);
-
-          cb(null, name);
-        },
-      }),
-    }),
-  )
   @Put(':id')
   async update(
     @Param() id: number,
