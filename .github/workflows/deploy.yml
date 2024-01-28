@@ -29,5 +29,6 @@ jobs:
             cd ~/codium-backend
             git pull
             yarn install
+            npx prisma generate
             yarn build
             pm2 restart backend
