@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -47,9 +47,9 @@ export class SubjectController {
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Put(':id')
+  @Patch(':id')
   async updateSubject(
-    @Param() id: string,
+    @Param('id') id: string,
     @Body() subject: Partial<CreateSubjectDto>,
   ) {
     return this.subjectService.updateSubject(+id, subject);
