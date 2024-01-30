@@ -58,7 +58,7 @@ export class SubjectController {
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async deleteSubject(@Param() id: string) {
+  async deleteSubject(@Param('id') id: string) {
     return this.subjectService.deleteSubject(+id);
   }
 }
