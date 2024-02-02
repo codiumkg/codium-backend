@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -28,6 +29,13 @@ export class UserController {
   @Get()
   async getUsers(@Query() { offset, limit }: PaginationParams) {
     return this.userService.getUsers(+offset, +limit);
+  }
+
+  @HasRoles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post()
+  async createUser(@Body() user: CreateUserDto) {
+    return this.userService.createUser(user);
   }
 
   @HasRoles(Role.ADMIN)

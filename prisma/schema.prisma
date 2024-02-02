@@ -22,6 +22,7 @@ model User {
   username   String       @unique @db.VarChar(30)
   password   String
   email      String?
+  phone      String?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @default(now())
   quizResult QuizResult[]
