@@ -14,6 +14,9 @@ export class RegRequestService {
 
   findAll(offset?: number, limit?: number) {
     return this.prismaService.regRequest.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
       ...paginationOptions(offset, limit),
     });
   }
