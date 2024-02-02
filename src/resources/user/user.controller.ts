@@ -31,6 +31,13 @@ export class UserController {
     return this.userService.getUsers(+offset, +limit);
   }
 
+  @HasRoles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':id')
+  async getUser(@Param('id') id: string) {
+    return this.userService.getUserById(+id);
+  }
+
   @HasRoles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()

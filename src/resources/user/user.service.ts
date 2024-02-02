@@ -35,7 +35,10 @@ export class UserService {
   }
 
   async getUserById(id: number): Promise<User | null> {
-    return this.prismaService.user.findFirst({ where: { id } });
+    return this.prismaService.user.findFirst({
+      where: { id },
+      include: { profile: true },
+    });
   }
 
   async createUser(user: SignupDto) {
