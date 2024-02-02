@@ -25,9 +25,9 @@ export class CreateUserDto {
   @IsOptional()
   lastName?: string;
 
+  @IsOptional()
   @IsString()
   @IsPhoneNumber()
-  @IsOptional()
   phone?: string;
 
   @IsString()
@@ -38,8 +38,8 @@ export class CreateUserDto {
   @IsOptional()
   image?: string;
 
-  @IsEmail()
   @IsOptional()
+  @IsEmail()
   email?: string;
 
   @IsNumber()
