@@ -28,7 +28,7 @@ model User {
   role       Role         @default(STUDENT)
   profile    Profile?
   groupId    Int?
-  group      Group?       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group      Group?       @relation(fields: [groupId], references: [id])
 }
 
 model Profile {
@@ -39,14 +39,14 @@ model Profile {
   image     String?
   bio       String?
   userId    Int     @unique
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 model Group {
   id        Int     @id @default(autoincrement())
   title     String  @db.VarChar(50)
   subjectId Int
-  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subject   Subject @relation(fields: [subjectId], references: [id])
   users     User[]
 }
 
@@ -67,7 +67,7 @@ model Answer {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
   questionId      Int
-  question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question        Question @relation(fields: [questionId], references: [id])
 }
 
 model Question {
@@ -77,7 +77,7 @@ model Question {
   tip        String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
-  quiz       Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quiz       Quiz     @relation(fields: [quizId], references: [id])
   quizId     Int
   openAnswer String?
   answers    Answer[]
@@ -91,7 +91,7 @@ model Quiz {
   updatedAt   DateTime     @default(now())
   questions   Question[]
   quizResults QuizResult[]
-  topic       Topic        @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topic       Topic        @relation(fields: [topicId], references: [id])
   topicId     Int
 }
 
@@ -103,8 +103,8 @@ model QuizResult {
   updatedAt   DateTime @default(now())
   quizId      Int
   userId      Int
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id])
+  quiz        Quiz     @relation(fields: [quizId], references: [id])
 }
 
 model Lecture {
@@ -116,14 +116,14 @@ model Lecture {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   topicId   Int
-  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topic     Topic    @relation(fields: [topicId], references: [id])
 }
 
 model Topic {
   id        Int       @id @default(autoincrement())
   title     String?
   sectionId Int
-  section   Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  section   Section   @relation(fields: [sectionId], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
   quizzes   Quiz[]
@@ -136,7 +136,7 @@ model Section {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   subjectId Int
-  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subject   Subject  @relation(fields: [subjectId], references: [id])
   topics    Topic[]
 }
 
