@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateRegRequestDto {
   @IsNotEmpty()
@@ -8,6 +15,10 @@ export class CreateRegRequestDto {
   @IsNotEmpty()
   @IsNumber()
   age: number;
+
+  @IsBoolean()
+  @IsOptional()
+  isChecked: boolean;
 
   @IsNotEmpty()
   @IsPhoneNumber()

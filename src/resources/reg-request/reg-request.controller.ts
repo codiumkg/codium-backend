@@ -51,6 +51,10 @@ export class RegRequestController {
     return this.regRequestService.update(+id, updateRegRequestDto);
   }
 
+  check(@Param('id') id: string) {
+    return this.regRequestService.check(+id);
+  }
+
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')

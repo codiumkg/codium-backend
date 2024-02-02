@@ -32,6 +32,20 @@ export class RegRequestService {
     });
   }
 
+  async check(id: number) {
+    const regRequest = await this.prismaService.regRequest.findFirst({
+      where: { id },
+    });
+
+    return this.prismaService.regRequest.update({
+      where: { id },
+      data: {
+        ...regRequest,
+        isChecked: !regRequest.isChecked,
+      },
+    });
+  }
+
   remove(id: number) {
     return this.prismaService.regRequest.delete({ where: { id } });
   }
