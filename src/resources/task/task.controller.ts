@@ -9,9 +9,9 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { QuestionService } from './question.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import { TaskService } from './task.service';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
@@ -19,13 +19,13 @@ import { Role } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 
 @Controller('questions')
-export class QuestionController {
-  constructor(private readonly questionService: QuestionService) {}
+export class TaskController {
+  constructor(private readonly questionService: TaskService) {}
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
-  create(@Body() question: CreateQuestionDto) {
+  create(@Body() question: CreateTaskDto) {
     return this.questionService.create(question);
   }
 
@@ -44,10 +44,7 @@ export class QuestionController {
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateQuestionDto: UpdateQuestionDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateQuestionDto: UpdateTaskDto) {
     return this.questionService.update(+id, updateQuestionDto);
   }
 

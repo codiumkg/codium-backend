@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { LectureService } from './lecture.service';
 import { CreateLectureDto } from './dto/create-lecture.dto';
@@ -17,11 +19,16 @@ import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
+import { JwtService } from '@nestjs/jwt';
+import { IUserData } from '../auth/interfaces/tokenData';
 
 @UseGuards(JwtAuthGuard)
 @Controller('lectures')
 export class LectureController {
-  constructor(private readonly lectureService: LectureService) {}
+  constructor(
+    private readonly lectureService: LectureService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(RolesGuard)
@@ -50,6 +57,21 @@ export class LectureController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.lectureService.findOne(+id);
+  }
+
+  @Post(':id/complete')
+  complete(@Param('id') id: string, @Req() req: Request) {
+    const authorization = req.headers.get('Authorization');
+
+    try {
+      const token = authorization.replace('Bearer ', '');
+
+      const user = this.jwtService.decode(token) as IUserData;
+
+      return this.lectureService.complete(+id, user?.id);
+    } catch (e) {
+      throw new BadRequestException('Could not complete the task');
+    }
   }
 
   @HasRoles(Role.ADMIN, Role.MANAGER)

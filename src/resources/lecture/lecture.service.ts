@@ -43,6 +43,12 @@ export class LectureService {
     });
   }
 
+  complete(lectureId: number, userId: number) {
+    return this.prismaService.lectureUserCompleted.create({
+      data: { lectureId, userId },
+    });
+  }
+
   update(id: number, updateLectureDto: UpdateLectureDto) {
     return this.prismaService.lecture.update({
       where: { id },

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class CreateQuestionDto {
+export class CreateTaskDto {
   @IsString()
   @IsNotEmpty()
   text: string;
@@ -19,5 +19,5 @@ export class CreateQuestionDto {
 
   @IsNumber()
   @IsNotEmpty()
-  quizId: number;
+  topicId: number;
 }

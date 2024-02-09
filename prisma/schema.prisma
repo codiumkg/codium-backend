@@ -17,19 +17,25 @@ enum Role {
   ADMIN
 }
 
+enum TopicContentType {
+  TASK
+  LECTURE
+}
+
 model User {
-  id         Int          @id @default(autoincrement())
-  username   String       @unique @db.VarChar(30)
-  password   String
-  email      String?
-  phone      String?
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @default(now())
-  quizResult QuizResult[]
-  role       Role         @default(STUDENT)
-  profile    Profile?
-  groupId    Int?
-  group      Group?       @relation(fields: [groupId], references: [id])
+  id                   Int                    @id @default(autoincrement())
+  username             String                 @unique @db.VarChar(30)
+  password             String
+  email                String?
+  phone                String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @default(now())
+  role                 Role                   @default(STUDENT)
+  profile              Profile?
+  groupId              Int?
+  group                Group?                 @relation(fields: [groupId], references: [id])
+  LectureUserCompleted LectureUserCompleted[]
+  TaskUserCompleted    TaskUserCompleted[]
 }
 
 model Profile {
@@ -67,57 +73,63 @@ model Answer {
   isCorrectAnswer Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
-  questionId      Int
-  question        Question @relation(fields: [questionId], references: [id])
+  taskId          Int
+  Task            Task     @relation(fields: [taskId], references: [id])
 }
 
-model Question {
-  id         Int      @id @default(autoincrement())
-  text       String
-  image      String?
-  tip        String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-  quiz       Quiz     @relation(fields: [quizId], references: [id])
-  quizId     Int
-  openAnswer String?
-  answers    Answer[]
+model Task {
+  id                Int                 @id @default(autoincrement())
+  text              String
+  image             String?
+  tip               String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now())
+  topicId           Int
+  topic             Topic               @relation(fields: [topicId], references: [id])
+  openAnswer        String?
+  answers           Answer[]
+  TopicContent      TopicContent[]
+  TaskUserCompleted TaskUserCompleted[]
 }
 
-model Quiz {
-  id          Int          @id @default(autoincrement())
-  title       String       @unique @db.VarChar(150)
-  image       String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now())
-  questions   Question[]
-  quizResults QuizResult[]
-  topic       Topic        @relation(fields: [topicId], references: [id])
-  topicId     Int
-}
-
-model QuizResult {
-  id          Int      @id @default(autoincrement())
-  score       String
-  teacherMark String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-  quizId      Int
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id])
-  quiz        Quiz     @relation(fields: [quizId], references: [id])
+model TaskUserCompleted {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  taskId Int
+  task   Task @relation(fields: [taskId], references: [id])
 }
 
 model Lecture {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  number    Int      @default(autoincrement())
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  topicId   Int
-  topic     Topic    @relation(fields: [topicId], references: [id])
+  id                   Int                    @id @default(autoincrement())
+  title                String
+  content              String?
+  number               Int                    @default(autoincrement())
+  image                String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @default(now())
+  topicId              Int
+  topic                Topic                  @relation(fields: [topicId], references: [id])
+  TopicContent         TopicContent[]
+  LectureUserCompleted LectureUserCompleted[]
+}
+
+model LectureUserCompleted {
+  id        Int     @id @default(autoincrement())
+  lectureId Int
+  userId    Int
+  lecture   Lecture @relation(fields: [lectureId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model TopicContent {
+  id          Int              @id @default(autoincrement())
+  type        TopicContentType
+  orderNumber Int
+  taskId      Int?
+  task        Task?            @relation(fields: [taskId], references: [id])
+  lectureId   Int?
+  lecture     Lecture?         @relation(fields: [lectureId], references: [id])
 }
 
 model Topic {
@@ -127,7 +139,7 @@ model Topic {
   section   Section   @relation(fields: [sectionId], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
-  quizzes   Quiz[]
+  tasks     Task[]
   lectures  Lecture[]
 }
 
@@ -145,6 +157,7 @@ model RegRequest {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(60)
   phone     String   @db.VarChar(20)
+  email     String?  @db.VarChar(60)
   age       Int
   isChecked Boolean  @default(false)
   createdAt DateTime @default(now())
