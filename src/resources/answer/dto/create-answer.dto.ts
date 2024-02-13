@@ -10,5 +10,5 @@ export class CreateAnswerDto {
 
   @IsNotEmpty()
   @IsNumber()
-  questionId: number;
+  taskId: number;
 }
