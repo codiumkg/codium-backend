@@ -18,40 +18,40 @@ import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 
-@Controller('questions')
+@Controller('tasks')
 export class TaskController {
-  constructor(private readonly questionService: TaskService) {}
+  constructor(private readonly taskService: TaskService) {}
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   create(@Body() question: CreateTaskDto) {
-    return this.questionService.create(question);
+    return this.taskService.create(question);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() { offset, limit }: PaginationParams) {
-    return this.questionService.findAll(+offset, +limit);
+    return this.taskService.findAll(+offset, +limit);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.questionService.findOne(+id);
+    return this.taskService.findOne(+id);
   }
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateQuestionDto: UpdateTaskDto) {
-    return this.questionService.update(+id, updateQuestionDto);
+    return this.taskService.update(+id, updateQuestionDto);
   }
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.questionService.remove(+id);
+    return this.taskService.remove(+id);
   }
 }
