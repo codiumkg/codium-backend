@@ -75,7 +75,7 @@ model Answer {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
   taskId          Int
-  Task            Task     @relation(fields: [taskId], references: [id])
+  task            Task     @relation(fields: [taskId], references: [id])
 }
 
 model Task {
@@ -89,8 +89,8 @@ model Task {
   topic             Topic               @relation(fields: [topicId], references: [id])
   userAnswers       TaskUserAnswer[]
   answers           Answer[]
-  TopicContent      TopicContent[]
-  TaskUserCompleted TaskUserCompleted[]
+  topicContent      TopicContent[]
+  taskUserCompleted TaskUserCompleted[]
 }
 
 model TaskUserAnswer {
@@ -122,7 +122,7 @@ model Lecture {
   updatedAt            DateTime               @default(now())
   topicId              Int
   topic                Topic                  @relation(fields: [topicId], references: [id])
-  TopicContent         TopicContent[]
+  topicContent         TopicContent[]
   LectureUserCompleted LectureUserCompleted[]
 }
 
