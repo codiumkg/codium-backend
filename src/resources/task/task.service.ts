@@ -16,7 +16,7 @@ export class TaskService {
 
   findAll(offset?: number, limit?: number) {
     return this.prismaService.task.findMany({
-      include: { answers: true },
+      include: { answers: true, topic: true },
       ...paginationOptions(offset, limit),
     });
   }
@@ -24,7 +24,7 @@ export class TaskService {
   findOne(id: number) {
     return this.prismaService.task.findFirst({
       where: { id },
-      include: { answers: true },
+      include: { answers: true, topic: true },
     });
   }
 
