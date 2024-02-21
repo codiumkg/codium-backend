@@ -19,6 +19,7 @@ import { GroupModule } from './resources/group/group.module';
 import { TopicModule } from './resources/topic/topic.module';
 import { LectureModule } from './resources/lecture/lecture.module';
 import { ImageModule } from './resources/image/image.module';
+import { TopicContentModule } from './resources/topic-content/topic-content.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ImageModule } from './resources/image/image.module';
     TopicModule,
     LectureModule,
     ImageModule,
+    TopicContentModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],

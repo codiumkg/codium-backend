@@ -17,11 +17,15 @@ import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
+import { TopicContentService } from '../topic-content/topic-content.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('topics')
 export class TopicController {
-  constructor(private readonly topicService: TopicService) {}
+  constructor(
+    private readonly topicService: TopicService,
+    private readonly topicContentService: TopicContentService,
+  ) {}
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(RolesGuard)
@@ -46,6 +50,11 @@ export class TopicController {
     }
 
     return this.topicService.findAll(+offset, +limit, title);
+  }
+
+  @Get(':id/get-content')
+  getContent(@Param('id') id: string) {
+    return this.topicContentService.findAll(+id);
   }
 
   @Get(':id')
