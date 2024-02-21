@@ -15,6 +15,7 @@ export class UserService {
     try {
       const users = await this.prismaService.user.findMany({
         ...paginationOptions(offset, limit),
+        include: { profile: true },
       });
 
       return users.map((user) => {
@@ -30,7 +31,7 @@ export class UserService {
   async getUserByUsername(username: string) {
     return this.prismaService.user.findUnique({
       where: { username },
-      include: { group: { include: { subject: true } } },
+      include: { group: { include: { subject: true } }, profile: true },
     });
   }
 
