@@ -1,4 +1,4 @@
-import { Group, Role } from '@prisma/client';
+import { Group, Profile, Role } from '@prisma/client';
 
 export interface IUserData {
   id: number;
@@ -6,4 +6,5 @@ export interface IUserData {
   role: Role;
   groupId?: number;
   group?: Group;
+  profile?: Profile;
 }

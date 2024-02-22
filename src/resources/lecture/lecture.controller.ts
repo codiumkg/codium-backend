@@ -61,7 +61,7 @@ export class LectureController {
 
   @Post(':id/complete')
   complete(@Param('id') id: string, @Req() req: Request) {
-    const authorization = req.headers.get('Authorization');
+    const authorization = req.headers['authorization'];
 
     try {
       const token = authorization.replace('Bearer ', '');
