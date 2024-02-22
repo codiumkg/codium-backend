@@ -5,4 +5,5 @@ export class CreateTopicContentDto {
   orderNumber: number;
   taskId?: number;
   lectureId?: number;
+  topicId: number;
 }
