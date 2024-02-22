@@ -142,17 +142,20 @@ model TopicContent {
   task        Task?            @relation(fields: [taskId], references: [id])
   lectureId   Int?
   lecture     Lecture?         @relation(fields: [lectureId], references: [id])
+  topicId     Int
+  topic       Topic            @relation(fields: [topicId], references: [id])
 }
 
 model Topic {
-  id        Int       @id @default(autoincrement())
-  title     String?
-  sectionId Int
-  section   Section   @relation(fields: [sectionId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  tasks     Task[]
-  lectures  Lecture[]
+  id           Int            @id @default(autoincrement())
+  title        String?
+  sectionId    Int
+  section      Section        @relation(fields: [sectionId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+  tasks        Task[]
+  lectures     Lecture[]
+  topicContent TopicContent[]
 }
 
 model Section {
