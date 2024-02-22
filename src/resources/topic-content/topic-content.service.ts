@@ -15,7 +15,7 @@ export class TopicContentService {
 
   findAll(topicId?: number) {
     return this.prismaService.topicContent.findMany({
-      ...(topicId && { where: { id: topicId } }),
+      ...(topicId && { where: { topicId } }),
     });
   }
 
