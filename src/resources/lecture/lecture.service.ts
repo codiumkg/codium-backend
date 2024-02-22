@@ -43,10 +43,23 @@ export class LectureService {
     });
   }
 
-  complete(lectureId: number, userId: number) {
-    return this.prismaService.lectureUserCompleted.create({
-      data: { lectureId, userId },
-    });
+  async complete(lectureId: number, userId: number) {
+    const completedRecords =
+      await this.prismaService.lectureUserCompleted.findMany();
+
+    const existingRecord = completedRecords.find(
+      (record) => record.lectureId === lectureId && record.userId === userId,
+    );
+
+    if (!existingRecord) {
+      return this.prismaService.lectureUserCompleted.create({
+        data: { lectureId, userId },
+      });
+    }
+
+    return {
+      message: 'Already completed',
+    };
   }
 
   update(id: number, updateLectureDto: UpdateLectureDto) {
