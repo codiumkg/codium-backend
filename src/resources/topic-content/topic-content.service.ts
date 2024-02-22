@@ -22,7 +22,10 @@ export class TopicContentService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} topicContent`;
+    return this.prismaService.topicContent.findFirst({
+      where: { id },
+      include: { topic: true, lecture: true, task: true },
+    });
   }
 
   update(id: number, updateTopicContentDto: UpdateTopicContentDto) {
