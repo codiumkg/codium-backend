@@ -45,13 +45,11 @@ export class LectureService {
 
   async complete(lectureId: number, userId: number) {
     const completedRecords =
-      await this.prismaService.lectureUserCompleted.findMany();
+      await this.prismaService.lectureUserCompleted.findMany({
+        where: { lectureId, userId },
+      });
 
-    const existingRecord = completedRecords.find(
-      (record) => record.lectureId === lectureId && record.userId === userId,
-    );
-
-    if (!existingRecord) {
+    if (!completedRecords.length) {
       return this.prismaService.lectureUserCompleted.create({
         data: { lectureId, userId },
       });
