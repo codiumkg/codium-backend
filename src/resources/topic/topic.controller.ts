@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
 import { CreateTopicDto } from './dto/create-topic.dto';
@@ -18,6 +20,9 @@ import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 import { TopicContentService } from '../topic-content/topic-content.service';
+import { JwtService } from '@nestjs/jwt';
+import { IUserData } from '../auth/interfaces/tokenData';
+import { LectureUserCompleteService } from '../lecture-user-complete/lecture-user-complete.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('topics')
@@ -25,6 +30,8 @@ export class TopicController {
   constructor(
     private readonly topicService: TopicService,
     private readonly topicContentService: TopicContentService,
+    private readonly lectureUserCompletedService: LectureUserCompleteService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
@@ -53,8 +60,36 @@ export class TopicController {
   }
 
   @Get(':id/get-content')
-  getContent(@Param('id') id: string) {
-    return this.topicContentService.findAll(+id);
+  async getContent(@Param('id') id: string, @Req() req) {
+    const authorization = req.headers['authorization'];
+
+    try {
+      const token = authorization.replace('Bearer ', '');
+
+      const user = this.jwtService.decode(token) as IUserData;
+
+      const topicContent = await this.topicContentService.findAll(+id);
+
+      const lectureUserCompleted =
+        await this.lectureUserCompletedService.findAll();
+
+      // Add isCompleted field to lectures
+      return topicContent.map((content) => ({
+        ...content,
+        ...(content.type === 'LECTURE' && {
+          lecture: {
+            ...content.lecture,
+            isCompleted: lectureUserCompleted.some(
+              (record) =>
+                record.lectureId === content.lectureId &&
+                record.userId === user.id,
+            ),
+          },
+        }),
+      }));
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
   @Get(':id')

@@ -20,6 +20,7 @@ import { TopicModule } from './resources/topic/topic.module';
 import { LectureModule } from './resources/lecture/lecture.module';
 import { ImageModule } from './resources/image/image.module';
 import { TopicContentModule } from './resources/topic-content/topic-content.module';
+import { LectureUserCompleteModule } from './resources/lecture-user-complete/lecture-user-complete.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { TopicContentModule } from './resources/topic-content/topic-content.modu
     LectureModule,
     ImageModule,
     TopicContentModule,
+    LectureUserCompleteModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],
