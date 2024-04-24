@@ -11,7 +11,16 @@ export class TaskService {
   }
 
   create(task: CreateTaskDto) {
-    return this.prismaService.task.create({ data: task });
+    return this.prismaService.task.create({
+      data: {
+        ...task,
+        answers: {
+          createMany: {
+            data: task.answers,
+          },
+        },
+      },
+    });
   }
 
   findAll(offset?: number, limit?: number) {
@@ -31,7 +40,17 @@ export class TaskService {
   update(id: number, task: UpdateTaskDto) {
     return this.prismaService.task.update({
       where: { id },
-      data: task,
+      data: {
+        ...task,
+        answers: {
+          updateMany: {
+            where: {
+              taskId: id,
+            },
+            data: task.answers,
+          },
+        },
+      },
     });
   }
 

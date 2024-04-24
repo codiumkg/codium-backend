@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { CreateAnswerDto } from 'src/resources/answer/dto/create-answer.dto';
 
 export class CreateTaskDto {
   @IsString()
@@ -20,4 +27,7 @@ export class CreateTaskDto {
   @IsNumber()
   @IsNotEmpty()
   topicId: number;
+
+  @IsArray()
+  answers?: CreateAnswerDto[];
 }
