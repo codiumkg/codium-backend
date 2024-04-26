@@ -7,6 +7,8 @@ import {
 } from 'class-validator';
 
 export class CreateAnswerDto {
+  id?: number;
+
   @IsString()
   @IsNotEmpty()
   text: string;

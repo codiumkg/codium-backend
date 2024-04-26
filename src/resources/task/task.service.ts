@@ -37,19 +37,26 @@ export class TaskService {
     });
   }
 
-  update(id: number, task: UpdateTaskDto) {
+  async update(id: number, task: UpdateTaskDto) {
+    task.answers.map(async (answer) =>
+      !answer.id
+        ? await this.prismaService.answer.create({
+            data: { ...answer, taskId: id },
+          })
+        : await this.prismaService.answer.update({
+            where: { id: answer.id },
+            data: { ...answer, taskId: id },
+          }),
+    );
+
     return this.prismaService.task.update({
       where: { id },
       data: {
         ...task,
-        answers: {
-          updateMany: {
-            where: {
-              taskId: id,
-            },
-            data: task.answers,
-          },
-        },
+        answers: {},
+      },
+      include: {
+        answers: true,
       },
     });
   }

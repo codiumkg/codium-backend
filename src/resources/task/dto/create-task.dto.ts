@@ -18,16 +18,13 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsString()
-  openAnswer?: string;
-
-  @IsOptional()
-  @IsString()
   tip?: string;
 
   @IsNumber()
   @IsNotEmpty()
   topicId: number;
 
+  @IsNotEmpty()
   @IsArray()
-  answers?: CreateAnswerDto[];
+  answers: CreateAnswerDto[];
 }
