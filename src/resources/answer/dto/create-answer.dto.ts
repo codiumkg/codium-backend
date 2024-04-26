@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateAnswerDto {
   @IsString()
@@ -8,7 +14,7 @@ export class CreateAnswerDto {
   @IsBoolean()
   isCorrectAnswer: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   taskId: number;
 }
