@@ -3,10 +3,14 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
+import { AnswerService } from '../answer/answer.service';
 
 @Injectable()
 export class TaskService {
-  constructor(private readonly prismaService: PrismaService) {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly answerService: AnswerService,
+  ) {
     this.prismaService = prismaService;
   }
 
@@ -38,26 +42,26 @@ export class TaskService {
   }
 
   async update(id: number, task: UpdateTaskDto) {
-    task.answers.map(async (answer) =>
-      !answer.id
-        ? await this.prismaService.answer.create({
-            data: { ...answer, taskId: id },
-          })
-        : await this.prismaService.answer.update({
-            where: { id: answer.id },
-            data: { ...answer, taskId: id },
-          }),
-    );
+    const answers = await this.prismaService.answer.findMany({
+      where: { taskId: id },
+    });
+
+    const answerIdsToUpdate = answers.map((answer) => answer.id);
+
+    for (const answer of task.answers) {
+      const answerIndex = answerIdsToUpdate.indexOf(answer.id);
+
+      if (answerIndex !== -1) {
+        await this.answerService.update(answerIdsToUpdate[answerIndex], answer);
+      } else {
+        await this.answerService.create({ ...answer, taskId: id });
+      }
+    }
 
     return this.prismaService.task.update({
       where: { id },
-      data: {
-        ...task,
-        answers: {},
-      },
-      include: {
-        answers: true,
-      },
+      data: { ...task, answers: {} },
+      include: { answers: true },
     });
   }
 
