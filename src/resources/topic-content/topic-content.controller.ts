@@ -27,11 +27,11 @@ export class TopicContentController {
     return this.topicContentService.create(createTopicContentDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll() {
-    return this.topicContentService.findAll();
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Get()
+  // findAll() {
+  //   return this.topicContentService.findAll();
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')

@@ -137,7 +137,7 @@ model LectureUserCompleted {
 model TopicContent {
   id          Int              @id @default(autoincrement())
   type        TopicContentType
-  orderNumber Int              @unique @default(autoincrement())
+  orderNumber Int              @default(autoincrement())
   taskId      Int?
   task        Task?            @relation(fields: [taskId], references: [id])
   lectureId   Int?

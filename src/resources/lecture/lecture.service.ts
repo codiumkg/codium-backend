@@ -14,12 +14,17 @@ export class LectureService {
   create(createLectureDto: CreateLectureDto) {
     return this.prismaService.lecture
       .create({ data: createLectureDto })
-      .then((lecture) => {
+      .then(async (lecture) => {
+        const topicContentCount = await this.prismaService.topicContent.count({
+          where: { topicId: lecture.topicId },
+        });
+
         this.prismaService.topicContent.create({
           data: {
             lectureId: lecture.id,
             type: TopicContentType.LECTURE,
             topicId: lecture.topicId,
+            orderNumber: topicContentCount + 1,
           },
         });
       });

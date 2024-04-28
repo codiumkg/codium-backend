@@ -74,8 +74,9 @@ export class TopicController {
         await this.lectureUserCompletedService.findAll();
 
       // Add isCompleted field to lectures
-      return topicContent.map((content) => ({
+      return topicContent.map((content, index) => ({
         ...content,
+        orderNumber: index + 1,
         ...(content.type === 'LECTURE' && {
           lecture: {
             ...content.lecture,

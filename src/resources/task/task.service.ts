@@ -15,7 +15,7 @@ export class TaskService {
     this.prismaService = prismaService;
   }
 
-  create(task: CreateTaskDto) {
+  async create(task: CreateTaskDto) {
     return this.prismaService.task
       .create({
         data: {
@@ -27,14 +27,21 @@ export class TaskService {
           },
         },
       })
-      .then((task) => {
+      .then(async (task) => {
+        const topicContentCount = await this.prismaService.topicContent.count({
+          where: { topicId: task.topicId },
+        });
+
         this.prismaService.topicContent.create({
           data: {
             taskId: task.id,
             type: TopicContentType.TASK,
             topicId: task.topicId,
+            orderNumber: topicContentCount + 1,
           },
         });
+
+        return task;
       });
   }
 
