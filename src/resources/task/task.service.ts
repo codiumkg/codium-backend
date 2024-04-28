@@ -4,6 +4,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { AnswerService } from '../answer/answer.service';
+import { TopicContentType } from '@prisma/client';
 
 @Injectable()
 export class TaskService {
@@ -15,16 +16,26 @@ export class TaskService {
   }
 
   create(task: CreateTaskDto) {
-    return this.prismaService.task.create({
-      data: {
-        ...task,
-        answers: {
-          createMany: {
-            data: task.answers,
+    return this.prismaService.task
+      .create({
+        data: {
+          ...task,
+          answers: {
+            createMany: {
+              data: task.answers,
+            },
           },
         },
-      },
-    });
+      })
+      .then((task) => {
+        this.prismaService.topicContent.create({
+          data: {
+            taskId: task.id,
+            type: TopicContentType.TASK,
+            topicId: task.topicId,
+          },
+        });
+      });
   }
 
   findAll(offset?: number, limit?: number) {

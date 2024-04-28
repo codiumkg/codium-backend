@@ -3,6 +3,7 @@ import { CreateLectureDto } from './dto/create-lecture.dto';
 import { UpdateLectureDto } from './dto/update-lecture.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
+import { TopicContentType } from '@prisma/client';
 
 @Injectable()
 export class LectureService {
@@ -11,7 +12,17 @@ export class LectureService {
   }
 
   create(createLectureDto: CreateLectureDto) {
-    return this.prismaService.lecture.create({ data: createLectureDto });
+    return this.prismaService.lecture
+      .create({ data: createLectureDto })
+      .then((lecture) => {
+        this.prismaService.topicContent.create({
+          data: {
+            lectureId: lecture.id,
+            type: TopicContentType.LECTURE,
+            topicId: lecture.topicId,
+          },
+        });
+      });
   }
 
   findAll(offset?: number, limit?: number, title?: string) {
