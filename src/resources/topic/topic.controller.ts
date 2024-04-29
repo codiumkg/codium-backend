@@ -97,8 +97,11 @@ export class TopicController {
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(RolesGuard)
   @Post(':id/update_content_order')
-  updateContentOrder(@Body() topicContent: TopicContentOrderDto) {
-    return this.topicService.reorderContent(topicContent);
+  updateContentOrder(
+    @Param('id') id: string,
+    @Body() topicContent: TopicContentOrderDto,
+  ) {
+    return this.topicService.reorderContent(+id, topicContent);
   }
 
   @Get(':id')

@@ -55,18 +55,17 @@ export class TopicService {
     return this.prismaService.topic.delete({ where: { id } });
   }
 
-  reorderContent(data: TopicContentOrderDto) {
-    return this.prismaService.topicContent.updateMany({
-      where: {
-        id: {
-          in: data.topicContentIds,
-        },
-      },
-      data: {
-        orderNumber: {
-          increment: 1,
-        },
-      },
-    });
+  async reorderContent(id: number, data: TopicContentOrderDto) {
+    data.topicContentIds.map(
+      async (id, index) =>
+        await this.prismaService.topicContent.update({
+          where: { id },
+          data: {
+            orderNumber: ++index,
+          },
+        }),
+    );
+
+    return this.prismaService.topicContent.findMany({ where: { topicId: id } });
   }
 }

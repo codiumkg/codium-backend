@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -76,11 +76,26 @@ export class TaskService {
       }
     }
 
-    return this.prismaService.task.update({
-      where: { id },
-      data: { ...task, answers: {} },
-      include: { answers: true },
-    });
+    return this.prismaService.task
+      .update({
+        where: { id },
+        data: { ...task, answers: {} },
+        include: {
+          answers: true,
+          topicContent: true,
+        },
+      })
+      .then(async (task) => {
+        await this.prismaService.topicContent.update({
+          where: { id: task.topicContent.id },
+          data: {
+            topicId: task.topicId,
+          },
+        });
+
+        return task;
+      })
+      .catch((error) => new BadRequestException(error));
   }
 
   remove(id: number) {

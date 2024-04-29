@@ -89,7 +89,7 @@ model Task {
   topic             Topic               @relation(fields: [topicId], references: [id])
   userAnswers       TaskUserAnswer[]
   answers           Answer[]
-  topicContent      TopicContent[]
+  topicContent      TopicContent?
   taskUserCompleted TaskUserCompleted[]
 }
 
@@ -122,7 +122,7 @@ model Lecture {
   updatedAt            DateTime               @default(now())
   topicId              Int
   topic                Topic                  @relation(fields: [topicId], references: [id])
-  topicContent         TopicContent[]
+  topicContent         TopicContent?
   LectureUserCompleted LectureUserCompleted[]
 }
 
@@ -138,9 +138,9 @@ model TopicContent {
   id          Int              @id @default(autoincrement())
   type        TopicContentType
   orderNumber Int              @default(autoincrement())
-  taskId      Int?
+  taskId      Int?             @unique
   task        Task?            @relation(fields: [taskId], references: [id])
-  lectureId   Int?
+  lectureId   Int?             @unique
   lecture     Lecture?         @relation(fields: [lectureId], references: [id])
   topicId     Int
   topic       Topic            @relation(fields: [topicId], references: [id])

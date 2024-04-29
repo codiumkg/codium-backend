@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLectureDto } from './dto/create-lecture.dto';
 import { UpdateLectureDto } from './dto/update-lecture.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -77,10 +77,25 @@ export class LectureService {
   }
 
   update(id: number, updateLectureDto: UpdateLectureDto) {
-    return this.prismaService.lecture.update({
-      where: { id },
-      data: updateLectureDto,
-    });
+    return this.prismaService.lecture
+      .update({
+        where: { id },
+        data: updateLectureDto,
+        include: {
+          topicContent: true,
+        },
+      })
+      .then(async (lecture) => {
+        await this.prismaService.topicContent.update({
+          where: { id: lecture.topicContent.id },
+          data: {
+            topicId: lecture.topicId,
+          },
+        });
+
+        return lecture;
+      })
+      .catch((error) => new BadRequestException(error));
   }
 
   remove(id: number) {
