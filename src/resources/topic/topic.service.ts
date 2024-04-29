@@ -3,6 +3,7 @@ import { CreateTopicDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
+import { TopicContentOrderDto } from './dto/topic-content-order.dto';
 
 @Injectable()
 export class TopicService {
@@ -52,5 +53,20 @@ export class TopicService {
 
   remove(id: number) {
     return this.prismaService.topic.delete({ where: { id } });
+  }
+
+  reorderContent(data: TopicContentOrderDto) {
+    return this.prismaService.topicContent.updateMany({
+      where: {
+        id: {
+          in: data.topicContentIds,
+        },
+      },
+      data: {
+        orderNumber: {
+          increment: 1,
+        },
+      },
+    });
   }
 }

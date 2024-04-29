@@ -23,6 +23,7 @@ import { TopicContentService } from '../topic-content/topic-content.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUserData } from '../auth/interfaces/tokenData';
 import { LectureUserCompleteService } from '../lecture-user-complete/lecture-user-complete.service';
+import { TopicContentOrderDto } from './dto/topic-content-order.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('topics')
@@ -91,6 +92,13 @@ export class TopicController {
     } catch (e) {
       throw new BadRequestException();
     }
+  }
+
+  @HasRoles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(RolesGuard)
+  @Post(':id/update_content_order')
+  updateContentOrder(@Body() topicContent: TopicContentOrderDto) {
+    return this.topicService.reorderContent(topicContent);
   }
 
   @Get(':id')
