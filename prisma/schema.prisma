@@ -33,7 +33,7 @@ model User {
   role                 Role                   @default(STUDENT)
   profile              Profile?
   groupId              Int?
-  group                Group?                 @relation(fields: [groupId], references: [id])
+  group                Group?                 @relation(fields: [groupId], references: [id], onDelete: Restrict)
   LectureUserCompleted LectureUserCompleted[]
   TaskUserCompleted    TaskUserCompleted[]
   TaskUserAnswer       TaskUserAnswer[]
@@ -47,14 +47,14 @@ model Profile {
   image     String?
   bio       String?
   userId    Int     @unique
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Group {
   id        Int     @id @default(autoincrement())
   title     String  @db.VarChar(50)
   subjectId Int
-  subject   Subject @relation(fields: [subjectId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
   users     User[]
 }
 
@@ -86,7 +86,7 @@ model Task {
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @default(now())
   topicId           Int
-  topic             Topic               @relation(fields: [topicId], references: [id])
+  topic             Topic               @relation(fields: [topicId], references: [id], onDelete: Restrict)
   userAnswers       TaskUserAnswer[]
   answers           Answer[]
   topicContent      TopicContent?
@@ -96,9 +96,9 @@ model Task {
 model TaskUserAnswer {
   id        Int      @id @default(autoincrement())
   text      String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  task      Task     @relation(fields: [taskId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -107,9 +107,9 @@ model TaskUserAnswer {
 model TaskUserCompleted {
   id     Int  @id @default(autoincrement())
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   taskId Int
-  task   Task @relation(fields: [taskId], references: [id])
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 model Lecture {
@@ -121,7 +121,7 @@ model Lecture {
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @default(now())
   topicId              Int
-  topic                Topic                  @relation(fields: [topicId], references: [id])
+  topic                Topic                  @relation(fields: [topicId], references: [id], onDelete: Restrict)
   topicContent         TopicContent?
   LectureUserCompleted LectureUserCompleted[]
 }
@@ -130,8 +130,8 @@ model LectureUserCompleted {
   id        Int     @id @default(autoincrement())
   lectureId Int
   userId    Int
-  lecture   Lecture @relation(fields: [lectureId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
+  lecture   Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model TopicContent {
@@ -139,9 +139,9 @@ model TopicContent {
   type        TopicContentType
   orderNumber Int              @default(autoincrement())
   taskId      Int?             @unique
-  task        Task?            @relation(fields: [taskId], references: [id])
+  task        Task?            @relation(fields: [taskId], references: [id], onDelete: Cascade)
   lectureId   Int?             @unique
-  lecture     Lecture?         @relation(fields: [lectureId], references: [id])
+  lecture     Lecture?         @relation(fields: [lectureId], references: [id], onDelete: Cascade)
   topicId     Int
   topic       Topic            @relation(fields: [topicId], references: [id])
 }
@@ -150,7 +150,7 @@ model Topic {
   id           Int            @id @default(autoincrement())
   title        String?
   sectionId    Int
-  section      Section        @relation(fields: [sectionId], references: [id])
+  section      Section        @relation(fields: [sectionId], references: [id], onDelete: Restrict)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @default(now())
   tasks        Task[]
@@ -164,7 +164,7 @@ model Section {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   subjectId Int
-  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Restrict)
   topics    Topic[]
 }
 
