@@ -87,6 +87,7 @@ model Task {
   updatedAt         DateTime            @default(now())
   topicId           Int
   topic             Topic               @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  isUserAnswer      Boolean             @default(false)
   userAnswers       TaskUserAnswer[]
   answers           Answer[]
   topicContent      TopicContent?
