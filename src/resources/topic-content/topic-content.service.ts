@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTopicContentDto } from './dto/create-topic-content.dto';
 import { UpdateTopicContentDto } from './dto/update-topic-content.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -35,7 +35,9 @@ export class TopicContentService {
     });
   }
 
-  remove(id: number) {
-    return this.prismaService.topicContent.delete({ where: { id } });
+  async remove(id: number) {
+    return this.prismaService.topicContent
+      .delete({ where: { id } })
+      .catch((error) => new BadRequestException(error));
   }
 }

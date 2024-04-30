@@ -32,7 +32,7 @@ export class TaskService {
           where: { topicId: task.topicId },
         });
 
-        this.prismaService.topicContent.create({
+        await this.prismaService.topicContent.create({
           data: {
             taskId: task.id,
             type: TopicContentType.TASK,
@@ -53,10 +53,14 @@ export class TaskService {
   }
 
   findOne(id: number) {
-    return this.prismaService.task.findFirst({
-      where: { id },
-      include: { answers: true, topic: true },
-    });
+    try {
+      return this.prismaService.task.findFirst({
+        where: { id },
+        include: { answers: true, topic: true },
+      });
+    } catch (error) {
+      return new BadRequestException(error);
+    }
   }
 
   async update(id: number, task: UpdateTaskDto) {
@@ -99,6 +103,10 @@ export class TaskService {
   }
 
   remove(id: number) {
-    return this.prismaService.task.delete({ where: { id } });
+    try {
+      return this.prismaService.task.delete({ where: { id } });
+    } catch (error) {
+      return new BadRequestException(error);
+    }
   }
 }
