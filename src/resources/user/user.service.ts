@@ -70,7 +70,14 @@ export class UserService {
   async updateUser(id: number, user: Partial<CreateUserDto>) {
     const updatedUser = await this.prismaService.user.update({
       where: { id },
-      data: user,
+      data: {
+        username: user.username,
+        password: user.password,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        groupId: user.groupId,
+      },
     });
 
     await this.prismaService.profile.update({
