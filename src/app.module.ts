@@ -21,6 +21,7 @@ import { LectureModule } from './resources/lecture/lecture.module';
 import { ImageModule } from './resources/image/image.module';
 import { TopicContentModule } from './resources/topic-content/topic-content.module';
 import { LectureUserCompleteModule } from './resources/lecture-user-complete/lecture-user-complete.module';
+import { TaskUserAnswerModule } from './resources/task-user-answer/task-user-answer.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { LectureUserCompleteModule } from './resources/lecture-user-complete/lec
     ImageModule,
     TopicContentModule,
     LectureUserCompleteModule,
+    TaskUserAnswerModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],

@@ -39,7 +39,6 @@ export class TaskController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @GetUser() user: User) {
-    console.log(user);
     return this.taskService.findOne(+id, user);
   }
 

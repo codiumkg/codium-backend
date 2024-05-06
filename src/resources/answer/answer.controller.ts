@@ -73,7 +73,7 @@ export class AnswerController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/check-answer')
-  checkIfIsCorrect(@Param('id') id: string) {
-    return this.answerService.checkIfIsCorrect(+id);
+  checkIfIsCorrect(@Param('id') id: string, @GetUser() user: User) {
+    return this.answerService.checkIfIsCorrect(+id, user);
   }
 }
