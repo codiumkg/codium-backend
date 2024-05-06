@@ -70,7 +70,7 @@ model Subject {
 
 model Answer {
   id              Int      @id @default(autoincrement())
-  text            String   @db.VarChar(180)
+  text            String   @db.VarChar(250)
   isCorrectAnswer Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
@@ -116,7 +116,7 @@ model TaskUserCompleted {
 model Lecture {
   id                   Int                    @id @default(autoincrement())
   title                String
-  content              String?
+  content              String?                @db.Text
   number               Int                    @default(autoincrement())
   image                String?
   createdAt            DateTime               @default(now())
