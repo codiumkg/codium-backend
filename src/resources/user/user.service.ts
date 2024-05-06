@@ -69,7 +69,7 @@ export class UserService {
 
   async updateUser(id: number, user: Partial<CreateUserDto>) {
     const updatedUser = await this.prismaService.user.update({
-      where: { id },
+      where: { id: +id },
       data: {
         username: user.username,
         password: user.password,
@@ -82,7 +82,7 @@ export class UserService {
 
     await this.prismaService.profile.update({
       where: {
-        userId: updatedUser.id,
+        userId: +updatedUser.id,
       },
       data: {
         firstName: user.firstName,
