@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -56,6 +56,8 @@ export class TopicService {
   }
 
   async reorderContent(id: number, data: TopicContentOrderDto) {
+    if (!data) throw new BadRequestException('No topic content ids provided');
+
     data.topicContentIds.map(
       async (id, index) =>
         await this.prismaService.topicContent.update({
