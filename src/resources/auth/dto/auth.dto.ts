@@ -50,5 +50,9 @@ export class SignupDto {
   @IsOptional()
   groupId?: number;
 
+  @IsNumber()
+  @IsOptional()
+  age?: number;
+
   role: Role;
 }

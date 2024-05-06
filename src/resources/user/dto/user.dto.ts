@@ -46,5 +46,9 @@ export class CreateUserDto {
   @IsOptional()
   groupId?: number;
 
+  @IsNumber()
+  @IsOptional()
+  age?: number;
+
   role: Role;
 }

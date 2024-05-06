@@ -60,6 +60,7 @@ export class UserService {
         bio: user.bio,
         image: user.image,
         userId: newUser.id,
+        age: user.age,
       },
     });
 
@@ -81,6 +82,7 @@ export class UserService {
         lastName: user.lastName,
         bio: user.bio,
         image: user.image,
+        age: user.age,
       },
     });
 
