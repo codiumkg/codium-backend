@@ -5,8 +5,8 @@ import {
   Get,
   HttpStatus,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -47,7 +47,7 @@ export class UserController {
 
   @HasRoles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Put(':id')
+  @Patch(':id')
   async updateUser(
     @Body() user: Partial<CreateUserDto>,
     @Param('id') id: number,

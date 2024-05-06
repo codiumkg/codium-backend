@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   UploadedFile,
   UseGuards,
@@ -45,7 +45,7 @@ export class ProfileController {
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Put(':id')
+  @Patch(':id')
   async update(
     @Param() id: number,
     @Body() profile: Partial<CreateProfileDto>,
