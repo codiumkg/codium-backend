@@ -15,8 +15,9 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
+import { GetUser } from 'src/decorators/user.decorator';
 
 @Controller('tasks')
 export class TaskController {
@@ -31,14 +32,15 @@ export class TaskController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query() { offset, limit }: PaginationParams) {
-    return this.taskService.findAll(+offset, +limit);
+  findAll(@Query() { offset, limit }: PaginationParams, @GetUser() user: User) {
+    return this.taskService.findAll({ offset: +offset, limit: +limit, user });
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+  findOne(@Param('id') id: string, @GetUser() user: User) {
+    console.log(user);
+    return this.taskService.findOne(+id, user);
   }
 
   @HasRoles(Role.ADMIN, Role.TEACHER)

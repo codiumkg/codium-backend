@@ -88,6 +88,12 @@ export class TopicController {
             ),
           },
         }),
+        ...(content.type === 'TASK' && {
+          task: {
+            ...content.task,
+            isCorrectAnswer: null,
+          },
+        }),
       }));
     } catch (e) {
       throw new BadRequestException();

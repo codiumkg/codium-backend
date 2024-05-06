@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -34,5 +34,21 @@ export class AnswerService {
 
   remove(id: number) {
     return this.prismaService.answer.delete({ where: { id } });
+  }
+
+  async checkIfIsCorrect(id: number) {
+    const selectedAnswer = await this.prismaService.answer.findFirst({
+      where: { id },
+      include: { task: true },
+    });
+
+    if (!selectedAnswer) {
+      return new BadRequestException('Could not check answer');
+    }
+
+    return {
+      isCorrect: selectedAnswer.isCorrectAnswer,
+      correctAnswerExplanation: selectedAnswer.task.correctAnswerExplanation,
+    };
   }
 }

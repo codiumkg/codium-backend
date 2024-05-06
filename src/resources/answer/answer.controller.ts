@@ -15,8 +15,9 @@ import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
+import { GetUser } from 'src/decorators/user.decorator';
 
 @Controller('answers')
 export class AnswerController {
@@ -31,14 +32,29 @@ export class AnswerController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query() { offset, limit }: PaginationParams) {
-    return this.answerService.findAll(+offset, +limit);
+  async findAll(
+    @Query() { offset, limit }: PaginationParams,
+    @GetUser() user: User,
+  ) {
+    const answers = await this.answerService.findAll(+offset, +limit);
+
+    if (user.role !== Role.STUDENT) {
+      return answers;
+    }
+
+    return answers.map((answer) => ({ ...answer, isCorrectAnswer: null }));
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.answerService.findOne(+id);
+  async findOne(@Param('id') id: string, @GetUser() user: User) {
+    const answer = await this.answerService.findOne(+id);
+
+    if (user.role !== Role.STUDENT) {
+      return answer;
+    }
+
+    return { ...answer, isCorrectAnswer: null };
   }
 
   @HasRoles(Role.ADMIN, Role.TEACHER)
@@ -53,5 +69,11 @@ export class AnswerController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.answerService.remove(+id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/check-answer')
+  checkIfIsCorrect(@Param('id') id: string) {
+    return this.answerService.checkIfIsCorrect(+id);
   }
 }

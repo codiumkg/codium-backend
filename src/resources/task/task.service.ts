@@ -4,7 +4,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { AnswerService } from '../answer/answer.service';
-import { TopicContentType } from '@prisma/client';
+import { Role, TopicContentType, User } from '@prisma/client';
 
 @Injectable()
 export class TaskService {
@@ -45,19 +45,57 @@ export class TaskService {
       });
   }
 
-  findAll(offset?: number, limit?: number) {
-    return this.prismaService.task.findMany({
+  async findAll({
+    offset,
+    limit,
+    user,
+  }: {
+    offset?: number;
+    limit?: number;
+    user: User;
+  }) {
+    const tasks = await this.prismaService.task.findMany({
       include: { answers: true, topic: true },
       ...paginationOptions(offset, limit),
     });
+
+    if (user.role !== Role.STUDENT) {
+      return tasks;
+    }
+
+    return tasks.map((task) => {
+      delete task.correctAnswerExplanation;
+
+      return {
+        ...task,
+        answers: task.answers.map((answer) => ({
+          ...answer,
+          isCorrectAnswer: null,
+        })),
+      };
+    });
   }
 
-  findOne(id: number) {
+  async findOne(id: number, user: User) {
     try {
-      return this.prismaService.task.findFirst({
+      const task = await this.prismaService.task.findFirst({
         where: { id },
         include: { answers: true, topic: true },
       });
+
+      if (user.role !== Role.STUDENT) {
+        return task;
+      }
+
+      delete task.correctAnswerExplanation;
+
+      return {
+        ...task,
+        answers: task.answers.map((answer) => ({
+          ...answer,
+          isCorrectAnswer: null,
+        })),
+      };
     } catch (error) {
       return new BadRequestException(error);
     }

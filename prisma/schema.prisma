@@ -69,34 +69,38 @@ model Subject {
 }
 
 model Answer {
-  id              Int      @id @default(autoincrement())
-  text            String   @db.VarChar(250)
-  isCorrectAnswer Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
+  id              Int              @id @default(autoincrement())
+  text            String           @db.VarChar(250)
+  isCorrectAnswer Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now())
   taskId          Int
-  task            Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task            Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  TaskUserAnswer  TaskUserAnswer[]
 }
 
 model Task {
-  id                Int                 @id @default(autoincrement())
-  text              String
-  image             String?
-  tip               String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @default(now())
-  topicId           Int
-  topic             Topic               @relation(fields: [topicId], references: [id], onDelete: Restrict)
-  isUserAnswer      Boolean             @default(false)
-  userAnswers       TaskUserAnswer[]
-  answers           Answer[]
-  topicContent      TopicContent?
-  taskUserCompleted TaskUserCompleted[]
+  id                       Int                 @id @default(autoincrement())
+  text                     String
+  image                    String?
+  tip                      String?
+  correctAnswerExplanation String?
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @default(now())
+  topicId                  Int
+  topic                    Topic               @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  isUserAnswer             Boolean             @default(false)
+  userAnswers              TaskUserAnswer[]
+  answers                  Answer[]
+  topicContent             TopicContent?
+  taskUserCompleted        TaskUserCompleted[]
 }
 
 model TaskUserAnswer {
   id        Int      @id @default(autoincrement())
   text      String
+  answerId  Int?
+  answer    Answer?  @relation(fields: [answerId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
