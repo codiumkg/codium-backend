@@ -105,7 +105,7 @@ export class TopicController {
             userAnswer: taskUserAnswer,
             answers: content.task.answers.map((answer) => ({
               ...answer,
-              isCorrectAnswer: null,
+              isCorrectAnswer: !!taskUserAnswer ? answer.isCorrectAnswer : null,
             })),
           },
         }),
