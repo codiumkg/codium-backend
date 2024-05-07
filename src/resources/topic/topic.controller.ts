@@ -73,7 +73,7 @@ export class TopicController {
 
       const topicContent = await this.topicContentService.findAll(+id);
 
-      const [lectureUserCompleted, taskUserCompleted] = await Promise.all([
+      const [lectureUserCompleted, taskUserAnswer] = await Promise.all([
         this.lectureUserCompletedService.findAll(),
         this.taskUserAnswerService.findByUserAndTaskId(user.id, +id),
       ]);
@@ -98,10 +98,11 @@ export class TopicController {
         ...(content.type === 'TASK' && {
           task: {
             ...content.task,
-            correctAnswerExplanation: taskUserCompleted
+            correctAnswerExplanation: taskUserAnswer
               ? content.task.correctAnswerExplanation
               : null,
-            isCompleted: !!taskUserCompleted,
+            isCompleted: !!taskUserAnswer,
+            userAnswer: taskUserAnswer,
             answers: content.task.answers.map((answer) => ({
               ...answer,
               isCorrectAnswer: null,

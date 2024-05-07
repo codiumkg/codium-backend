@@ -16,6 +16,7 @@ export class TaskUserAnswerService {
   findByUserAndTaskId(userId: number, taskId: number) {
     return this.prismaService.taskUserAnswer.findFirst({
       where: { userId, taskId },
+      include: { answer: true },
     });
   }
 
