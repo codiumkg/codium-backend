@@ -102,7 +102,10 @@ export class TopicController {
               ? content.task.correctAnswerExplanation
               : null,
             isCompleted: !!taskUserCompleted,
-            isCorrectAnswer: null,
+            answers: content.task.answers.map((answer) => ({
+              ...answer,
+              isCorrectAnswer: null,
+            })),
           },
         }),
       }));
