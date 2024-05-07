@@ -45,6 +45,18 @@ export class TaskService {
       });
   }
 
+  async getCurrentUserAnswer(id: number, user: User) {
+    const answer = await this.prismaService.taskUserAnswer.findFirst({
+      where: { taskId: id, userId: user.id },
+    });
+
+    if (!answer) {
+      return { message: 'Ответы текущего пользователя не найдены.' };
+    }
+
+    return answer;
+  }
+
   async findAll({
     offset,
     limit,

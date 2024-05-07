@@ -42,6 +42,11 @@ export class TaskController {
     return this.taskService.findOne(+id, user);
   }
 
+  @Get(':id/get-user-answer')
+  getCurrentUserAnswer(@Param('id') id: string, @GetUser() user: User) {
+    return this.taskService.getCurrentUserAnswer(+id, user);
+  }
+
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')

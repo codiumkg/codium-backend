@@ -44,7 +44,7 @@ export class AnswerService {
     });
 
     if (!selectedAnswer) {
-      return new BadRequestException('Could not check answer');
+      return new BadRequestException('Не удалось проверить ответ');
     }
 
     const userAnswer = await this.prismaService.taskUserAnswer.findMany({
@@ -52,9 +52,7 @@ export class AnswerService {
     });
 
     if (userAnswer.length) {
-      return {
-        message: 'Вы уже ответили на этот вопрос',
-      };
+      return new BadRequestException('Вы уже ответили на этот вопрос');
     }
 
     await this.prismaService.taskUserAnswer.create({

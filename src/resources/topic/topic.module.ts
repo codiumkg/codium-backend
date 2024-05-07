@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma.service';
 import { TopicContentService } from '../topic-content/topic-content.service';
 import { LectureUserCompleteService } from '../lecture-user-complete/lecture-user-complete.service';
 import { JwtService } from '@nestjs/jwt';
+import { TaskUserAnswerService } from '../task-user-answer/task-user-answer.service';
 
 @Module({
   controllers: [TopicController],
@@ -12,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
     TopicService,
     TopicContentService,
     LectureUserCompleteService,
+    TaskUserAnswerService,
     JwtService,
     PrismaService,
   ],

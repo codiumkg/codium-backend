@@ -24,6 +24,7 @@ import { JwtService } from '@nestjs/jwt';
 import { IUserData } from '../auth/interfaces/tokenData';
 import { LectureUserCompleteService } from '../lecture-user-complete/lecture-user-complete.service';
 import { TopicContentOrderDto } from './dto/topic-content-order.dto';
+import { TaskUserAnswerService } from '../task-user-answer/task-user-answer.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('topics')
@@ -32,6 +33,7 @@ export class TopicController {
     private readonly topicService: TopicService,
     private readonly topicContentService: TopicContentService,
     private readonly lectureUserCompletedService: LectureUserCompleteService,
+    private readonly taskUserAnswerService: TaskUserAnswerService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -71,10 +73,15 @@ export class TopicController {
 
       const topicContent = await this.topicContentService.findAll(+id);
 
-      const lectureUserCompleted =
-        await this.lectureUserCompletedService.findAll();
+      const [lectureUserCompleted, taskUserCompleted] = await Promise.all([
+        this.lectureUserCompletedService.findAll(),
+        this.taskUserAnswerService.findByUserAndTaskId(user.id, +id),
+      ]);
 
-      // Add isCompleted field to lectures
+      // Add isCompleted field to lectures and tasks
+      // Renew order number to start from 1 even if it's different in the database
+      // It is made for cases when topic content is deleted, but the order number remains
+      // It would not make sense to show order nubmers like = [4, 6, 7, 8, 9...], but = [1, 2, 3, 4, 5, 6...]
       return topicContent.map((content, index) => ({
         ...content,
         orderNumber: index + 1,
@@ -91,6 +98,10 @@ export class TopicController {
         ...(content.type === 'TASK' && {
           task: {
             ...content.task,
+            correctAnswerExplanation: taskUserCompleted
+              ? content.task.correctAnswerExplanation
+              : null,
+            isCompleted: !!taskUserCompleted,
             isCorrectAnswer: null,
           },
         }),
