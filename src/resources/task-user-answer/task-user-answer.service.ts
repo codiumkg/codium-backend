@@ -13,6 +13,10 @@ export class TaskUserAnswerService {
     });
   }
 
+  findByUser(userId: number) {
+    return this.prismaService.taskUserAnswer.findMany({ where: { userId } });
+  }
+
   findByUserAndTaskId(userId: number, taskId: number) {
     return this.prismaService.taskUserAnswer.findFirst({
       where: { userId, taskId },

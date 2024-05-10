@@ -75,7 +75,7 @@ export class TopicController {
 
       const [lectureUserCompleted, taskUserAnswer] = await Promise.all([
         this.lectureUserCompletedService.findAll(),
-        this.taskUserAnswerService.findByUserAndTaskId(user.id, +id),
+        this.taskUserAnswerService.findByUser(user.id),
       ]);
 
       // Add isCompleted field to lectures and tasks
@@ -101,8 +101,12 @@ export class TopicController {
             correctAnswerExplanation: taskUserAnswer
               ? content.task.correctAnswerExplanation
               : null,
-            isCompleted: !!taskUserAnswer,
-            userAnswer: taskUserAnswer,
+            isCompleted: taskUserAnswer.some(
+              (answer) => answer.taskId === content.taskId,
+            ),
+            userAnswer: taskUserAnswer.find(
+              (answer) => answer.taskId === content.taskId,
+            ),
             answers: content.task.answers.map((answer) => ({
               ...answer,
               isCorrectAnswer: !!taskUserAnswer ? answer.isCorrectAnswer : null,
