@@ -1,13 +1,23 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { User } from '@prisma/client';
+import { TopicContentType, User } from '@prisma/client';
 import { SignupDto } from 'src/resources/auth/dto/auth.dto';
 import { CreateUserDto } from 'src/resources/user/dto/user.dto';
 import { paginationOptions } from 'src/constants/transactionOptions';
+import { TopicService } from '../topic/topic.service';
+import { TopicContentService } from '../topic-content/topic-content.service';
+import { GroupService } from '../group/group.service';
+import { SectionService } from '../section/section.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly topicService: TopicService,
+    private readonly topicContentService: TopicContentService,
+    private readonly groupService: GroupService,
+    private readonly sectionService: SectionService,
+  ) {
     this.prismaService = prismaService;
   }
 
@@ -40,6 +50,54 @@ export class UserService {
       where: { id },
       include: { profile: true },
     });
+  }
+
+  async getProgress(user: User) {
+    const group = await this.groupService.findOne(user.groupId);
+
+    const sections = await this.sectionService.findAllBySubject({
+      subjectId: group.subjectId,
+      user,
+    });
+
+    const topicsBySection = await Promise.all(
+      sections.map((section) =>
+        this.topicService.findAll({ user, sectionId: section.id }),
+      ),
+    );
+
+    const topics = topicsBySection.reduce((acc, val) => acc.concat(val), []);
+
+    const topicContentsByTopic = await Promise.all(
+      topics.map((topic) =>
+        this.topicContentService.findAll({ user, topicId: topic.id }),
+      ),
+    );
+
+    const topicContents = topicContentsByTopic.reduce(
+      (acc, val) => acc.concat(val),
+      [],
+    );
+
+    const completedLecturesLength = topicContents.filter(
+      (content) =>
+        content.type === TopicContentType.LECTURE &&
+        content.lecture.isCompleted,
+    ).length;
+
+    const completedTopicsLength = topicContents.filter(
+      (content) =>
+        content.type === TopicContentType.TASK && content.task.isCompleted,
+    ).length;
+
+    const percent =
+      ((completedLecturesLength + completedTopicsLength) /
+        topicContents.length) *
+      100;
+
+    return {
+      percent: percent.toFixed(2),
+    };
   }
 
   async createUser(user: SignupDto) {
