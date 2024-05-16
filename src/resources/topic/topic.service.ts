@@ -4,10 +4,15 @@ import { UpdateTopicDto } from './dto/update-topic.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicContentOrderDto } from './dto/topic-content-order.dto';
+import { TopicContentService } from '../topic-content/topic-content.service';
+import { TopicContentType, User } from '@prisma/client';
 
 @Injectable()
 export class TopicService {
-  constructor(private readonly prismaService: PrismaService) {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly topicContentService: TopicContentService,
+  ) {
     this.prismaService = prismaService;
   }
 
@@ -15,25 +20,54 @@ export class TopicService {
     return this.prismaService.topic.create({ data: createTopicDto });
   }
 
-  findAll(offset?: number, limit?: number, title?: string) {
-    return this.prismaService.topic.findMany({
-      include: { section: true },
-      ...(title && { where: { title } }),
-      ...paginationOptions(offset, limit),
-    });
-  }
+  async findAll({
+    sectionId,
+    offset,
+    limit,
+    title,
+    user,
+  }: {
+    sectionId?: number;
+    offset?: number;
+    limit?: number;
+    title?: string;
+    user: User;
+  }) {
+    const [topics, topicContents] = await Promise.all([
+      this.prismaService.topic.findMany({
+        ...(sectionId && { where: { sectionId } }),
+        include: { section: true },
+        ...(title && { where: { title } }),
+        ...paginationOptions(offset, limit),
+      }),
+      this.topicContentService.findAll({ user }),
+    ]);
 
-  findAllBySection(
-    sectionId: number,
-    offset?: number,
-    limit?: number,
-    title?: string,
-  ) {
-    return this.prismaService.topic.findMany({
-      where: { sectionId },
-      include: { section: true },
-      ...(title && { where: { title } }),
-      ...paginationOptions(offset, limit),
+    return topics.map((topic) => {
+      const currentTopicContents = topicContents.filter(
+        (content) => content.topicId === topic.id,
+      );
+
+      const toComplete = currentTopicContents.length;
+
+      const lecturesCompleted = currentTopicContents.filter(
+        (content) =>
+          content.type === TopicContentType.LECTURE &&
+          content.lecture.isCompleted,
+      ).length;
+
+      const tasksCompleted = currentTopicContents.filter(
+        (content) =>
+          content.type === TopicContentType.TASK && content.task.isCompleted,
+      ).length;
+
+      return {
+        ...topic,
+        progress: {
+          completed: lecturesCompleted + tasksCompleted,
+          toComplete,
+        },
+      };
     });
   }
 

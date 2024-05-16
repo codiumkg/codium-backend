@@ -4,6 +4,7 @@ import { UpdateSectionDto } from './dto/update-section.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicService } from '../topic/topic.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class SectionService {
@@ -27,12 +28,19 @@ export class SectionService {
   }
 
   // TODO: progress - completed
-  async findAllBySubject(
-    subjectId: number,
-    offset?: number,
-    limit?: number,
-    title?: string,
-  ) {
+  async findAllBySubject({
+    subjectId,
+    offset,
+    limit,
+    title,
+    user,
+  }: {
+    subjectId: number;
+    offset?: number;
+    limit?: number;
+    title?: string;
+    user: User;
+  }) {
     const sections = await this.prismaService.section.findMany({
       where: { subjectId },
       include: { subject: true },
@@ -40,17 +48,23 @@ export class SectionService {
       ...paginationOptions(offset, limit),
     });
 
-    const topics = await this.topicService.findAll();
+    const topics = await this.topicService.findAll({ user });
 
     return sections.map((section) => {
-      const toComplete = topics.filter(
+      const currentSectionTopics = topics.filter(
         (topic) => topic.sectionId === section.id,
+      );
+
+      const toComplete = currentSectionTopics.length;
+
+      const completed = currentSectionTopics.filter(
+        (topic) => topic.progress.completed,
       ).length;
 
       return {
         ...section,
         progress: {
-          completed: 0,
+          completed,
           toComplete,
         },
       };

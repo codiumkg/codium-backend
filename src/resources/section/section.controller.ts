@@ -16,11 +16,12 @@ import { UpdateSectionDto } from './dto/update-section.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { IUserData } from '../auth/interfaces/tokenData';
 import PaginationParams from 'src/interfaces/paginationParams';
+import { GetUser } from 'src/decorators/user.decorator';
 
 @Controller('sections')
 export class SectionController {
@@ -42,6 +43,7 @@ export class SectionController {
     @Req() req: Request,
     @Query() { offset, limit }: PaginationParams,
     @Query('title') title: string,
+    @GetUser() user: User,
   ) {
     const { authorization } = req.headers;
 
@@ -50,12 +52,13 @@ export class SectionController {
     const userdata: IUserData = this.jwtService.decode(token) as IUserData;
 
     if (userdata.group) {
-      return this.sectionService.findAllBySubject(
-        userdata.group.subjectId,
-        +offset,
-        +limit,
+      return this.sectionService.findAllBySubject({
+        subjectId: userdata.group.subjectId,
+        offset: +offset,
+        limit: +limit,
         title,
-      );
+        user,
+      });
     }
 
     return this.sectionService.findAll(+offset, +limit, title);

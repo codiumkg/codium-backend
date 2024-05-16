@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Query,
-  Req,
   BadRequestException,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
@@ -17,14 +16,11 @@ import { UpdateTopicDto } from './dto/update-topic.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 import { TopicContentService } from '../topic-content/topic-content.service';
-import { JwtService } from '@nestjs/jwt';
-import { IUserData } from '../auth/interfaces/tokenData';
-import { LectureUserCompleteService } from '../lecture-user-complete/lecture-user-complete.service';
 import { TopicContentOrderDto } from './dto/topic-content-order.dto';
-import { TaskUserAnswerService } from '../task-user-answer/task-user-answer.service';
+import { GetUser } from 'src/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('topics')
@@ -32,9 +28,6 @@ export class TopicController {
   constructor(
     private readonly topicService: TopicService,
     private readonly topicContentService: TopicContentService,
-    private readonly lectureUserCompletedService: LectureUserCompleteService,
-    private readonly taskUserAnswerService: TaskUserAnswerService,
-    private readonly jwtService: JwtService,
   ) {}
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
@@ -49,71 +42,21 @@ export class TopicController {
     @Query('sectionId') sectionId: string,
     @Query() { offset, limit }: PaginationParams,
     @Query('title') title: string,
+    @GetUser() user: User,
   ) {
-    if (sectionId) {
-      return this.topicService.findAllBySection(
-        +sectionId,
-        +offset,
-        +limit,
-        title,
-      );
-    }
-
-    return this.topicService.findAll(+offset, +limit, title);
+    return this.topicService.findAll({
+      offset: +offset,
+      limit: +limit,
+      sectionId: +sectionId,
+      title,
+      user,
+    });
   }
 
   @Get(':id/get-content')
-  async getContent(@Param('id') id: string, @Req() req) {
-    const authorization = req.headers['authorization'];
-
+  async getContent(@Param('id') id: string, @GetUser() user: User) {
     try {
-      const token = authorization.replace('Bearer ', '');
-
-      const user = this.jwtService.decode(token) as IUserData;
-
-      const topicContent = await this.topicContentService.findAll(+id);
-
-      const [lectureUserCompleted, taskUserAnswer] = await Promise.all([
-        this.lectureUserCompletedService.findAll(),
-        this.taskUserAnswerService.findByUser(user.id),
-      ]);
-
-      // Add isCompleted field to lectures and tasks
-      // Renew order number to start from 1 even if it's different in the database
-      // It is made for cases when topic content is deleted, but the order number remains
-      // It would not make sense to show order nubmers like = [4, 6, 7, 8, 9...], but = [1, 2, 3, 4, 5, 6...]
-      return topicContent.map((content, index) => ({
-        ...content,
-        orderNumber: index + 1,
-        ...(content.type === 'LECTURE' && {
-          lecture: {
-            ...content.lecture,
-            isCompleted: lectureUserCompleted.some(
-              (record) =>
-                record.lectureId === content.lectureId &&
-                record.userId === user.id,
-            ),
-          },
-        }),
-        ...(content.type === 'TASK' && {
-          task: {
-            ...content.task,
-            correctAnswerExplanation: taskUserAnswer
-              ? content.task.correctAnswerExplanation
-              : null,
-            isCompleted: taskUserAnswer.some(
-              (answer) => answer.taskId === content.taskId,
-            ),
-            userAnswer: taskUserAnswer.find(
-              (answer) => answer.taskId === content.taskId,
-            ),
-            answers: content.task.answers.map((answer) => ({
-              ...answer,
-              isCorrectAnswer: !!taskUserAnswer ? answer.isCorrectAnswer : null,
-            })),
-          },
-        }),
-      }));
+      return this.topicContentService.findAll({ topicId: +id, user });
     } catch (e) {
       throw new BadRequestException();
     }
