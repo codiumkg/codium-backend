@@ -47,6 +47,7 @@ export class TaskController {
     return this.taskService.getCurrentUserAnswer(+id, user);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/save-custom-answer')
   saveCustomAnswer(
     @Param('id') id: string,
