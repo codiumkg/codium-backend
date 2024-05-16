@@ -55,6 +55,12 @@ export class AnswerService {
       return new BadRequestException('Вы уже ответили на этот вопрос');
     }
 
+    if (selectedAnswer.task.isUserAnswer) {
+      return new BadRequestException(
+        'Вы не можете использовать данный ресурс для ответа на открытые вопросы',
+      );
+    }
+
     await this.prismaService.taskUserAnswer.create({
       data: {
         answerId: id,

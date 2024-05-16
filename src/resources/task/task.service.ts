@@ -48,6 +48,14 @@ export class TaskService {
   }
 
   async saveCustomAnswer(id: number, text: string, user: User) {
+    const answer = await this.prismaService.taskUserAnswer.findFirst({
+      where: { taskId: id, userId: user.id },
+    });
+
+    if (answer) {
+      return { message: 'Вы уже отвечали на данный вопрос' };
+    }
+
     return this.taskUserAnswerService.create({
       text,
       userId: user.id,
