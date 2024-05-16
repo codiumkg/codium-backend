@@ -5,12 +5,14 @@ import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { AnswerService } from '../answer/answer.service';
 import { Role, TopicContentType, User } from '@prisma/client';
+import { TaskUserAnswerService } from '../task-user-answer/task-user-answer.service';
 
 @Injectable()
 export class TaskService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly answerService: AnswerService,
+    private readonly taskUserAnswerService: TaskUserAnswerService,
   ) {
     this.prismaService = prismaService;
   }
@@ -43,6 +45,14 @@ export class TaskService {
 
         return task;
       });
+  }
+
+  async saveCustomAnswer(id: number, text: string, user: User) {
+    return this.taskUserAnswerService.create({
+      text,
+      userId: user.id,
+      taskId: id,
+    });
   }
 
   async getCurrentUserAnswer(id: number, user: User) {

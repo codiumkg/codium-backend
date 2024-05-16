@@ -47,6 +47,15 @@ export class TaskController {
     return this.taskService.getCurrentUserAnswer(+id, user);
   }
 
+  @Post(':id/save-custom-answer')
+  saveCustomAnswer(
+    @Param('id') id: string,
+    @GetUser() user: User,
+    @Body() body: { text: string },
+  ) {
+    return this.taskService.saveCustomAnswer(+id, body.text, user);
+  }
+
   @HasRoles(Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
