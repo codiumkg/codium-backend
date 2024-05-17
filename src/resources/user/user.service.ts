@@ -96,7 +96,7 @@ export class UserService {
       100;
 
     return {
-      percent,
+      percent: Math.round(percent),
     };
   }
 
