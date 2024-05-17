@@ -58,7 +58,7 @@ export class SectionService {
       const toComplete = currentSectionTopics.length;
 
       const completed = currentSectionTopics.filter(
-        (topic) => topic.progress.completed,
+        (topic) => topic.progress.completed === topic.progress.toComplete,
       ).length;
 
       return {
