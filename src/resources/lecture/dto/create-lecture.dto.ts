@@ -9,10 +9,6 @@ export class CreateLectureDto {
   @IsOptional()
   content?: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  number: number;
-
   @IsString()
   @IsOptional()
   image?: string;
