@@ -8,6 +8,7 @@ import { TopicService } from '../topic/topic.service';
 import { TopicContentService } from '../topic-content/topic-content.service';
 import { GroupService } from '../group/group.service';
 import { SectionService } from '../section/section.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -101,10 +102,12 @@ export class UserService {
   }
 
   async createUser(user: SignupDto) {
+    const password = bcrypt.hashSync(this.generatePassword(8), 12);
+
     const newUser = await this.prismaService.user.create({
       data: {
         username: user.username,
-        password: user.password,
+        password,
         email: user.email,
         groupId: user.groupId,
         role: user.role,
@@ -123,6 +126,16 @@ export class UserService {
     });
 
     return newUser;
+  }
+
+  generatePassword(length: number) {
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    return Array.from(
+      { length },
+      () => chars[Math.floor(Math.random() * chars.length)],
+    ).join('');
   }
 
   async updateUser(id: number, user: Partial<CreateUserDto>) {

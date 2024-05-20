@@ -3,11 +3,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDto, SignupDto } from 'src/resources/auth/dto/auth.dto';
+import { LoginDto } from 'src/resources/auth/dto/auth.dto';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Role } from '@prisma/client';
 import { IUserData } from './interfaces/tokenData';
 
 @Injectable()
@@ -51,30 +50,6 @@ export class AuthService {
         group: user.group,
       },
     };
-  }
-
-  async signup(user: SignupDto) {
-    try {
-      const hash = await bcrypt.hash(user.password, 12);
-
-      if (!hash)
-        throw new BadRequestException('An error occured while creating a user');
-
-      const newUser = await this.userService.createUser({
-        ...user,
-        role: user.role || Role.STUDENT,
-        password: hash,
-      });
-
-      return {
-        message: 'User created successfully!',
-        user: {
-          username: newUser.username,
-        },
-      };
-    } catch (e) {
-      throw new BadRequestException(e.message);
-    }
   }
 
   async status(token: string) {
