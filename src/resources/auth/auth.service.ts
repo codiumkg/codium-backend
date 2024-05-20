@@ -3,11 +3,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDto } from 'src/resources/auth/dto/auth.dto';
+import { ChangePasswordDto, LoginDto } from 'src/resources/auth/dto/auth.dto';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { IUserData } from './interfaces/tokenData';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -49,6 +50,21 @@ export class AuthService {
         role: user.role,
         group: user.group,
       },
+    };
+  }
+
+  async changePassword(
+    { currentPassword, newPassword }: ChangePasswordDto,
+    user: User,
+  ) {
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isMatch) throw new UnauthorizedException('Пароли не совпадают');
+
+    this.userService.changePassword(user.id, newPassword);
+
+    return {
+      message: 'Пароль успешно изменен',
     };
   }
 

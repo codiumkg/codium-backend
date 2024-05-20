@@ -127,6 +127,13 @@ export class UserService {
     return newUser;
   }
 
+  changePassword(userId: number, newPassword: string) {
+    return this.prismaService.user.update({
+      where: { id: userId },
+      data: { password: bcrypt.hashSync(newPassword, 12) },
+    });
+  }
+
   generatePassword(length: number) {
     const chars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
