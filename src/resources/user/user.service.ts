@@ -101,7 +101,7 @@ export class UserService {
   }
 
   async createUser(user: CreateUserDto) {
-    const password = bcrypt.hashSync(this.generatePassword(8), 12);
+    const password = bcrypt.hashSync('codium123', 12);
 
     const newUser = await this.prismaService.user.create({
       data: {
