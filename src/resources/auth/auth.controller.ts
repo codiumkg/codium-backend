@@ -17,6 +17,7 @@ export class AuthController {
     return this.authService.login({ username, password });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/change-password')
   async changePassword(@Body() body: ChangePasswordDto, @GetUser() user: User) {
     return this.authService.changePassword(body, user);
