@@ -63,7 +63,7 @@ export class AuthService {
 
     if (!isMatch) throw new UnauthorizedException('Пароли не совпадают');
 
-    this.userService.changePassword(user.id, newPassword);
+    await this.userService.changePassword(user.id, newPassword);
 
     return {
       message: 'Пароль успешно изменен',
