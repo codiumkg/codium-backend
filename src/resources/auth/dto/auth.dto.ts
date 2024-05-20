@@ -1,11 +1,4 @@
-import { Role } from '@prisma/client';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginDto {
   @IsNotEmpty()
@@ -15,40 +8,4 @@ export class LoginDto {
   @IsNotEmpty()
   @IsString()
   password: string;
-}
-
-export class SignupDto {
-  @IsNotEmpty()
-  @IsString()
-  username: string;
-
-  @IsString()
-  @IsOptional()
-  firstName?: string;
-
-  @IsString()
-  @IsOptional()
-  lastName?: string;
-
-  @IsString()
-  @IsOptional()
-  bio?: string;
-
-  @IsString()
-  @IsOptional()
-  image?: string;
-
-  @IsEmail()
-  @IsOptional()
-  email?: string;
-
-  @IsNumber()
-  @IsOptional()
-  groupId?: number;
-
-  @IsNumber()
-  @IsOptional()
-  age?: number;
-
-  role: Role;
 }

@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { TopicContentType, User } from '@prisma/client';
-import { SignupDto } from 'src/resources/auth/dto/auth.dto';
 import { CreateUserDto } from 'src/resources/user/dto/user.dto';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicService } from '../topic/topic.service';
@@ -101,7 +100,7 @@ export class UserService {
     };
   }
 
-  async createUser(user: SignupDto) {
+  async createUser(user: CreateUserDto) {
     const password = bcrypt.hashSync(this.generatePassword(8), 12);
 
     const newUser = await this.prismaService.user.create({
@@ -143,7 +142,6 @@ export class UserService {
       where: { id: +id },
       data: {
         username: user.username,
-        password: user.password,
         email: user.email,
         phone: user.phone,
         role: user.role,
