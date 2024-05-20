@@ -57,7 +57,9 @@ export class AuthService {
     { currentPassword, newPassword }: ChangePasswordDto,
     user: User,
   ) {
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    const currentUser = await this.userService.getUserById(user.id);
+
+    const isMatch = await bcrypt.compare(currentPassword, currentUser.password);
 
     if (!isMatch) throw new UnauthorizedException('Пароли не совпадают');
 
