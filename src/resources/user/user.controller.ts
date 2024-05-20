@@ -45,11 +45,20 @@ export class UserController {
     return this.userService.getUserById(+id);
   }
 
+  @HasRoles(Role.ADMIN, Role.MANAGER, Role.TEACHER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id/get-progress')
   async getUserProgress(@Param('id') id: string) {
     const user = await this.userService.getUserById(+id);
 
     return this.userService.getProgress(user);
+  }
+
+  @HasRoles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post(':id/reset-password')
+  async resetPassword(@Param('id') id: string) {
+    return this.userService.changePassword(+id, 'codium123');
   }
 
   @HasRoles(Role.ADMIN)
