@@ -16,7 +16,7 @@ export class GroupService {
 
   findAll(offset?: number, limit?: number, title?: string) {
     return this.prismaService.group.findMany({
-      include: { subject: true },
+      include: { subject: true, teacher: true },
       ...(title && { where: { title } }),
       ...paginationOptions(offset, limit),
     });
@@ -24,7 +24,7 @@ export class GroupService {
 
   findByUser(username: string, offset?: number, limit?: number) {
     return this.prismaService.group.findFirst({
-      include: { subject: true },
+      include: { subject: true, teacher: true },
       where: { users: { some: { username } } },
       ...paginationOptions(offset, limit),
     });
@@ -33,7 +33,7 @@ export class GroupService {
   findOne(id: number) {
     return this.prismaService.group.findFirst({
       where: { id },
-      include: { subject: true },
+      include: { subject: true, teacher: true },
     });
   }
 
