@@ -16,9 +16,10 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 import { GroupFilterParams } from './dto/group-filter-params';
+import { GetUser } from 'src/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('groups')
@@ -39,6 +40,7 @@ export class GroupController {
     @Query() { offset, limit }: PaginationParams,
     @Query('title') title: string,
     @Query() groupFilterParams: GroupFilterParams,
+    @GetUser() user: User,
   ) {
     if (username) {
       const group = await this.groupService.findByUser(
@@ -52,6 +54,10 @@ export class GroupController {
       }
 
       return group;
+    }
+
+    if (user.role === Role.TEACHER) {
+      return this.groupService.findAll({ teacherId: user.id });
     }
 
     return this.groupService.findAll({
