@@ -33,7 +33,6 @@ export class GroupController {
     return this.groupService.create(createGroupDto);
   }
 
-  @UseGuards(RolesGuard)
   @Get()
   async findAll(
     @Query('username') username: string,
@@ -73,6 +72,8 @@ export class GroupController {
     return this.groupService.findOne(+id);
   }
 
+  @HasRoles(Role.ADMIN, Role.MANAGER, Role.TEACHER)
+  @UseGuards(RolesGuard)
   @Get(':id/get-students')
   async getStudents(@Param('id') id: string) {
     return this.groupService.getGroupStudents(+id);
