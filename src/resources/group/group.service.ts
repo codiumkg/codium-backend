@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class GroupService {
-  constructor(private readonly prismaService: PrismaService) {
-    this.prismaService = prismaService;
-  }
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
+  ) {}
 
   create(createGroupDto: CreateGroupDto) {
     return this.prismaService.group.create({ data: createGroupDto });
@@ -26,7 +29,15 @@ export class GroupService {
     teacherId?: number;
   }) {
     return this.prismaService.group.findMany({
-      include: { subject: true, teacher: true },
+      include: {
+        subject: true,
+        teacher: true,
+        _count: {
+          select: {
+            users: true,
+          },
+        },
+      },
       where: {
         ...(title && { title }),
         ...(teacherId && { teacherId }),
@@ -51,8 +62,9 @@ export class GroupService {
   }
 
   async getGroupStudents(groupId: number) {
-    const students = await this.prismaService.user.findMany({
-      where: { role: 'STUDENT', groupId },
+    const students = await this.userService.getUsers({
+      groupId,
+      role: 'STUDENT',
     });
 
     return {
