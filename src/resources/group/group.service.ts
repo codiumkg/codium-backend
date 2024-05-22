@@ -14,10 +14,23 @@ export class GroupService {
     return this.prismaService.group.create({ data: createGroupDto });
   }
 
-  findAll(offset?: number, limit?: number, title?: string) {
+  findAll({
+    offset,
+    limit,
+    title,
+    teacherId,
+  }: {
+    offset?: number;
+    limit?: number;
+    title?: string;
+    teacherId?: number;
+  }) {
     return this.prismaService.group.findMany({
       include: { subject: true, teacher: true },
-      ...(title && { where: { title } }),
+      where: {
+        ...(title && { title }),
+        ...(teacherId && { teacherId }),
+      },
       ...paginationOptions(offset, limit),
     });
   }

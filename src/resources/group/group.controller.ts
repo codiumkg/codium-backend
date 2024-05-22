@@ -18,6 +18,7 @@ import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
+import { GroupFilterParams } from './dto/group-filter-params';
 
 @UseGuards(JwtAuthGuard)
 @Controller('groups')
@@ -37,6 +38,7 @@ export class GroupController {
     @Query('username') username: string,
     @Query() { offset, limit }: PaginationParams,
     @Query('title') title: string,
+    @Query() groupFilterParams: GroupFilterParams,
   ) {
     if (username) {
       const group = await this.groupService.findByUser(
@@ -52,7 +54,12 @@ export class GroupController {
       return group;
     }
 
-    return this.groupService.findAll(+offset, +limit, title);
+    return this.groupService.findAll({
+      offset: +offset,
+      limit: +limit,
+      title,
+      teacherId: groupFilterParams.teacherId,
+    });
   }
 
   @Get(':id')
