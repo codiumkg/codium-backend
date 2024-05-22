@@ -2,16 +2,13 @@ import { Module } from '@nestjs/common';
 import { TopicContentService } from './topic-content.service';
 import { TopicContentController } from './topic-content.controller';
 import { PrismaService } from 'src/prisma.service';
-import { TaskUserAnswerService } from '../task-user-answer/task-user-answer.service';
-import { LectureUserCompleteService } from '../lecture-user-complete/lecture-user-complete.service';
+import { LectureUserCompleteModule } from '../lecture-user-complete/lecture-user-complete.module';
+import { TaskUserAnswerModule } from '../task-user-answer/task-user-answer.module';
 
 @Module({
+  imports: [LectureUserCompleteModule, TaskUserAnswerModule],
   controllers: [TopicContentController],
-  providers: [
-    TopicContentService,
-    PrismaService,
-    TaskUserAnswerService,
-    LectureUserCompleteService,
-  ],
+  providers: [TopicContentService, PrismaService],
+  exports: [TopicContentService],
 })
 export class TopicContentModule {}

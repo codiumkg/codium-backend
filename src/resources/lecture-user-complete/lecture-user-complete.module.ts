@@ -6,5 +6,6 @@ import { PrismaService } from 'src/prisma.service';
 @Module({
   controllers: [LectureUserCompleteController],
   providers: [LectureUserCompleteService, PrismaService],
+  exports: [LectureUserCompleteService],
 })
 export class LectureUserCompleteModule {}

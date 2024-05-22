@@ -5,9 +5,7 @@ import { paginationOptions } from 'src/constants/transactionOptions';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prismaService: PrismaService) {
-    this.prismaService = prismaService;
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(offset?: number, limit?: number) {
     return this.prismaService.profile.findMany({

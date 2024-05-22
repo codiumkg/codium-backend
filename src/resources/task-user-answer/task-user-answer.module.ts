@@ -6,5 +6,6 @@ import { PrismaService } from 'src/prisma.service';
 @Module({
   controllers: [TaskUserAnswerController],
   providers: [TaskUserAnswerService, PrismaService],
+  exports: [TaskUserAnswerService],
 })
 export class TaskUserAnswerModule {}

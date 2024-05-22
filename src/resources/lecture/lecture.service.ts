@@ -11,9 +11,7 @@ import { TopicContentType } from '@prisma/client';
 
 @Injectable()
 export class LectureService {
-  constructor(private readonly prismaService: PrismaService) {
-    this.prismaService = prismaService;
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createLectureDto: CreateLectureDto) {
     return this.prismaService.lecture

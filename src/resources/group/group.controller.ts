@@ -20,15 +20,11 @@ import { Role, User } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 import { GroupFilterParams } from './dto/group-filter-params';
 import { GetUser } from 'src/decorators/user.decorator';
-import { UserService } from '../user/user.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('groups')
 export class GroupController {
-  constructor(
-    private readonly groupService: GroupService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly groupService: GroupService) {}
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(RolesGuard)

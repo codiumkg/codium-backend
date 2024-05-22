@@ -11,9 +11,7 @@ export class SectionService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly topicService: TopicService,
-  ) {
-    this.prismaService = prismaService;
-  }
+  ) {}
 
   create(section: CreateSectionDto) {
     return this.prismaService.section.create({ data: section });
@@ -27,7 +25,6 @@ export class SectionService {
     });
   }
 
-  // TODO: progress - completed
   async findAllBySubject({
     subjectId,
     offset,
