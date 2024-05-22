@@ -34,6 +34,7 @@ model User {
   profile              Profile?
   groupId              Int?
   group                Group?                 @relation(fields: [groupId], references: [id], onDelete: Restrict)
+  teacherGroups        Group[]                @relation("teacherGroups")
   LectureUserCompleted LectureUserCompleted[]
   TaskUserCompleted    TaskUserCompleted[]
   TaskUserAnswer       TaskUserAnswer[]
@@ -55,6 +56,8 @@ model Group {
   title     String  @db.VarChar(50)
   subjectId Int
   subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  teacherId Int
+  teacher   User    @relation("teacherGroups", fields: [teacherId], references: [id], onDelete: Restrict)
   users     User[]
 }
 
