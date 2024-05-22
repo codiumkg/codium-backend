@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { TopicContentType, User } from '@prisma/client';
+import { Role, TopicContentType, User } from '@prisma/client';
 import { CreateUserDto } from 'src/resources/user/dto/user.dto';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicService } from '../topic/topic.service';
@@ -21,10 +21,17 @@ export class UserService {
     this.prismaService = prismaService;
   }
 
-  async getUsers(offset?: number, limit?: number) {
+  async getUsers(params?: { offset?: number; limit?: number; role?: Role }) {
     try {
       const users = await this.prismaService.user.findMany({
-        ...paginationOptions(offset, limit),
+        ...paginationOptions(params?.offset, params?.limit),
+        ...(params?.role && {
+          where: {
+            role: {
+              equals: params?.role,
+            },
+          },
+        }),
         include: { profile: true },
       });
 

@@ -1,6 +1,7 @@
 import { Role } from '@prisma/client';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -46,5 +47,11 @@ export class CreateUserDto {
   @IsOptional()
   age?: number;
 
+  role: Role;
+}
+
+export class UserFiltersDto {
+  @IsOptional()
+  @IsEnum(Role)
   role: Role;
 }
