@@ -8,4 +8,8 @@ export class CreateGroupDto {
   @IsNumber()
   @IsNotEmpty()
   subjectId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  teacherId: number;
 }
