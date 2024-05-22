@@ -21,7 +21,12 @@ export class UserService {
     this.prismaService = prismaService;
   }
 
-  async getUsers(params?: { offset?: number; limit?: number; role?: Role }) {
+  async getUsers(params?: {
+    offset?: number;
+    limit?: number;
+    role?: Role;
+    groupId?: number;
+  }) {
     try {
       const users = await this.prismaService.user.findMany({
         ...paginationOptions(params?.offset, params?.limit),
@@ -30,6 +35,11 @@ export class UserService {
             role: {
               equals: params?.role,
             },
+          },
+        }),
+        ...(params?.groupId && {
+          where: {
+            groupId: params?.groupId,
           },
         }),
         include: { profile: true },

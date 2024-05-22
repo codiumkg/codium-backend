@@ -3,10 +3,15 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginationOptions } from 'src/constants/transactionOptions';
+import { Role } from '@prisma/client';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class GroupService {
-  constructor(private readonly prismaService: PrismaService) {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly userService: UserService,
+  ) {
     this.prismaService = prismaService;
   }
 
@@ -48,6 +53,18 @@ export class GroupService {
       where: { id },
       include: { subject: true, teacher: true },
     });
+  }
+
+  async getGroupStudents(groupId: number) {
+    const students = await this.userService.getUsers({
+      role: Role.STUDENT,
+      groupId,
+    });
+
+    return {
+      studentsCount: students.length,
+      students,
+    };
   }
 
   update(id: number, updateGroupDto: UpdateGroupDto) {

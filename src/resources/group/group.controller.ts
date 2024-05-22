@@ -20,11 +20,15 @@ import { Role, User } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 import { GroupFilterParams } from './dto/group-filter-params';
 import { GetUser } from 'src/decorators/user.decorator';
+import { UserService } from '../user/user.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('groups')
 export class GroupController {
-  constructor(private readonly groupService: GroupService) {}
+  constructor(
+    private readonly groupService: GroupService,
+    private readonly userService: UserService,
+  ) {}
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(RolesGuard)
@@ -71,6 +75,11 @@ export class GroupController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.groupService.findOne(+id);
+  }
+
+  @Get(':id/get-students')
+  async getStudents(@Param('id') id: string) {
+    return this.groupService.getGroupStudents(+id);
   }
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
