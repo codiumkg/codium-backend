@@ -74,6 +74,7 @@ export class AuthService {
     try {
       const data: IUserData = this.jwtService.decode(token) as IUserData;
       return {
+        id: data.id,
         username: data.username,
         role: data.role,
         group: data.group,
