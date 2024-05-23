@@ -26,8 +26,12 @@ export class TopicContentService {
       orderBy: { orderNumber: 'asc' },
       include: {
         topic: true,
-        lecture: true,
-        task: { include: { answers: true } },
+        lecture: {
+          include: {
+            topic: true,
+          },
+        },
+        task: { include: { answers: true, topic: true } },
       },
     });
 

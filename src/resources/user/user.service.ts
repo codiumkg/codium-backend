@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { Role, TopicContentType, User } from '@prisma/client';
+import { Lecture, Role, Task, TopicContentType, User } from '@prisma/client';
 import { CreateUserDto } from 'src/resources/user/dto/user.dto';
 import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicService } from '../topic/topic.service';
@@ -114,8 +114,10 @@ export class UserService {
 
     return {
       percent: Math.round(percent),
-      completedLectures,
-      completedTasks,
+      completedLectures: completedLectures.map(
+        (content) => content.lecture,
+      ) as Lecture[],
+      completedTasks: completedTasks.map((content) => content.task) as Task[],
     };
   }
 
