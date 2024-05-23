@@ -96,24 +96,26 @@ export class UserService {
       [],
     );
 
-    const completedLecturesLength = topicContents.filter(
+    const completedLectures = topicContents.filter(
       (content) =>
         content.type === TopicContentType.LECTURE &&
         content.lecture.isCompleted,
-    ).length;
+    );
 
-    const completedTopicsLength = topicContents.filter(
+    const completedTasks = topicContents.filter(
       (content) =>
         content.type === TopicContentType.TASK && content.task.isCompleted,
-    ).length;
+    );
 
     const percent =
-      ((completedLecturesLength + completedTopicsLength) /
+      ((completedLectures.length + completedTasks.length) /
         topicContents.length) *
       100;
 
     return {
       percent: Math.round(percent),
+      completedLectures,
+      completedTasks,
     };
   }
 
