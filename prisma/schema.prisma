@@ -154,15 +154,17 @@ model TopicContent {
 }
 
 model Topic {
-  id           Int            @id @default(autoincrement())
-  title        String?
-  sectionId    Int
-  section      Section        @relation(fields: [sectionId], references: [id], onDelete: Restrict)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @default(now())
-  tasks        Task[]
-  lectures     Lecture[]
-  topicContent TopicContent[]
+  id            Int            @id @default(autoincrement())
+  title         String?
+  sectionId     Int
+  section       Section        @relation(fields: [sectionId], references: [id], onDelete: Restrict)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
+  tasks         Task[]
+  lectures      Lecture[]
+  topicContent  TopicContent[]
+  methodologies Methodology[]
+  presentations Presentation[]
 }
 
 model Section {
@@ -184,4 +186,18 @@ model RegRequest {
   isChecked Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+}
+
+model Methodology {
+  id       Int    @id @default(autoincrement())
+  filePath String
+  topicId  Int
+  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Restrict)
+}
+
+model Presentation {
+  id       Int    @id @default(autoincrement())
+  filePath String
+  topicId  Int
+  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Restrict)
 }
