@@ -22,6 +22,7 @@ import { TopicContentModule } from './resources/topic-content/topic-content.modu
 import { LectureUserCompleteModule } from './resources/lecture-user-complete/lecture-user-complete.module';
 import { TaskUserAnswerModule } from './resources/task-user-answer/task-user-answer.module';
 import { FileModule } from './resources/file/file.module';
+import { MethodologyModule } from './resources/methodology/methodology.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { FileModule } from './resources/file/file.module';
     LectureUserCompleteModule,
     TaskUserAnswerModule,
     FileModule,
+    MethodologyModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],
