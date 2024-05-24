@@ -9,7 +9,6 @@ import { AnswerModule } from './resources/answer/answer.module';
 import { SectionModule } from './resources/section/section.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule } from '@nestjs/config';
 import { ProfileModule } from './resources/profile/profile.module';
 import { UserModule } from './resources/user/user.module';
@@ -22,6 +21,7 @@ import { ImageModule } from './resources/image/image.module';
 import { TopicContentModule } from './resources/topic-content/topic-content.module';
 import { LectureUserCompleteModule } from './resources/lecture-user-complete/lecture-user-complete.module';
 import { TaskUserAnswerModule } from './resources/task-user-answer/task-user-answer.module';
+import { FileModule } from './resources/file/file.module';
 
 @Module({
   imports: [
@@ -29,10 +29,6 @@ import { TaskUserAnswerModule } from './resources/task-user-answer/task-user-ans
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    MulterModule.register({
-      dest: '../public/uploads',
-    }),
-
     AuthModule,
     AnswerModule,
     TaskModule,
@@ -48,6 +44,7 @@ import { TaskUserAnswerModule } from './resources/task-user-answer/task-user-ans
     TopicContentModule,
     LectureUserCompleteModule,
     TaskUserAnswerModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtStrategy],
