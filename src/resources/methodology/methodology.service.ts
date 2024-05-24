@@ -14,17 +14,23 @@ export class MethodologyService {
   }
 
   findAll() {
-    return this.prismaService.methodology.findMany();
+    return this.prismaService.methodology.findMany({
+      include: { topic: true },
+    });
   }
 
   findOne(id: number) {
-    return this.prismaService.methodology.findFirst({ where: { id } });
+    return this.prismaService.methodology.findFirst({
+      where: { id },
+      include: { topic: true },
+    });
   }
 
   update(id: number, updateMethodologyDto: UpdateMethodologyDto) {
     return this.prismaService.methodology.update({
       where: { id },
       data: updateMethodologyDto,
+      include: { topic: true },
     });
   }
 

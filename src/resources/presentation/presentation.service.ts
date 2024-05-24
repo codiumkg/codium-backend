@@ -13,17 +13,23 @@ export class PresentationService {
   }
 
   findAll() {
-    return this.prismaService.presentation.findMany();
+    return this.prismaService.presentation.findMany({
+      include: { topic: true },
+    });
   }
 
   findOne(id: number) {
-    return this.prismaService.presentation.findFirst({ where: { id } });
+    return this.prismaService.presentation.findFirst({
+      where: { id },
+      include: { topic: true },
+    });
   }
 
   update(id: number, updatePresentationDto: UpdatePresentationDto) {
     return this.prismaService.presentation.update({
       where: { id },
       data: updatePresentationDto,
+      include: { topic: true },
     });
   }
 
