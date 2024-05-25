@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskUserAnswerDto } from './dto/create-task-user-answer.dto';
 import { UpdateTaskUserAnswerDto } from './dto/update-task-user-answer.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -13,8 +13,16 @@ export class TaskUserAnswerService {
     });
   }
 
-  findByUser(userId: number) {
-    return this.prismaService.taskUserAnswer.findMany({ where: { userId } });
+  async findByUser(userId: number) {
+    const answers = await this.prismaService.taskUserAnswer.findMany({
+      where: { userId },
+    });
+
+    if (!answers) {
+      throw new NotFoundException('Ответы данного пользователя не найдены');
+    }
+
+    return answers;
   }
 
   findByUserAndTaskId(userId: number, taskId: number) {

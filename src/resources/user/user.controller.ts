@@ -18,12 +18,14 @@ import { HasRoles } from '../auth/has-roles.decorator';
 import { Role, User } from '@prisma/client';
 import PaginationParams from 'src/interfaces/paginationParams';
 import { GetUser } from 'src/decorators/user.decorator';
+import { TaskUserAnswerService } from '../task-user-answer/task-user-answer.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {
-    this.userService = userService;
-  }
+  constructor(
+    private readonly userService: UserService,
+    private readonly taskUserAnswerService: TaskUserAnswerService,
+  ) {}
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -55,6 +57,13 @@ export class UserController {
     const user = await this.userService.getUserById(+id);
 
     return this.userService.getProgress(user);
+  }
+
+  @HasRoles(Role.ADMIN, Role.MANAGER, Role.TEACHER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':id/get-task-answers')
+  async getTaskAnswers(@Param('id') id: string) {
+    return this.taskUserAnswerService.findByUser(+id);
   }
 
   @HasRoles(Role.ADMIN, Role.MANAGER)
