@@ -42,7 +42,7 @@ export class UserService {
             groupId: params?.groupId,
           },
         }),
-        include: { profile: true },
+        include: { profile: true, group: true },
       });
 
       return users.map((user) => {
