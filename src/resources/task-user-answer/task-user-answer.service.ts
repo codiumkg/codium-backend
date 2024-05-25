@@ -16,6 +16,7 @@ export class TaskUserAnswerService {
   async findByUser(userId: number) {
     const answers = await this.prismaService.taskUserAnswer.findMany({
       where: { userId },
+      include: { answer: true, task: true },
     });
 
     if (!answers) {
@@ -28,16 +29,21 @@ export class TaskUserAnswerService {
   findByUserAndTaskId(userId: number, taskId: number) {
     return this.prismaService.taskUserAnswer.findFirst({
       where: { userId, taskId },
-      include: { answer: true },
+      include: { answer: true, task: true },
     });
   }
 
   findAll() {
-    return this.prismaService.taskUserAnswer.findMany();
+    return this.prismaService.taskUserAnswer.findMany({
+      include: { answer: true, task: true },
+    });
   }
 
   findOne(id: number) {
-    return this.prismaService.taskUserAnswer.findFirst({ where: { id } });
+    return this.prismaService.taskUserAnswer.findFirst({
+      where: { id },
+      include: { answer: true, task: true },
+    });
   }
 
   update(id: number, updateTaskUserAnswerDto: UpdateTaskUserAnswerDto) {
