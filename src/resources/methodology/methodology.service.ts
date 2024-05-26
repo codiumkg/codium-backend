@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMethodologyDto } from './dto/create-methodology.dto';
 import { UpdateMethodologyDto } from './dto/update-methodology.dto';
 import { PrismaService } from 'src/prisma.service';
+import { MethodologyFiltersDto } from './dto/methodology-filters.dto';
 
 @Injectable()
 export class MethodologyService {
@@ -13,9 +14,12 @@ export class MethodologyService {
     });
   }
 
-  findAll() {
+  findAll(filters?: MethodologyFiltersDto) {
     return this.prismaService.methodology.findMany({
       include: { topic: true },
+      where: {
+        ...(filters?.topicId && { topicId: filters.topicId }),
+      },
     });
   }
 

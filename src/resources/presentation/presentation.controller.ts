@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PresentationService } from './presentation.service';
 import { CreatePresentationDto } from './dto/create-presentation.dto';
@@ -15,6 +16,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import { PresentationFiltersDto } from './dto/presentation-filters.dto';
 
 @Controller('presentations')
 export class PresentationController {
@@ -30,8 +32,8 @@ export class PresentationController {
   @HasRoles(Role.ADMIN, Role.MANAGER, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  findAll() {
-    return this.presentationService.findAll();
+  findAll(@Query() filtersDto: PresentationFiltersDto) {
+    return this.presentationService.findAll(filtersDto);
   }
 
   @HasRoles(Role.ADMIN, Role.MANAGER, Role.TEACHER)

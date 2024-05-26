@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MethodologyService } from './methodology.service';
 import { CreateMethodologyDto } from './dto/create-methodology.dto';
@@ -15,6 +16,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import { MethodologyFiltersDto } from './dto/methodology-filters.dto';
 
 @Controller('methodologies')
 export class MethodologyController {
@@ -30,8 +32,8 @@ export class MethodologyController {
   @HasRoles(Role.ADMIN, Role.MANAGER, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  findAll() {
-    return this.methodologyService.findAll();
+  findAll(@Query() filtersDto: MethodologyFiltersDto) {
+    return this.methodologyService.findAll(filtersDto);
   }
 
   @HasRoles(Role.ADMIN, Role.MANAGER, Role.TEACHER)

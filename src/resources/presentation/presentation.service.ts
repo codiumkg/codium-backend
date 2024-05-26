@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreatePresentationDto } from './dto/create-presentation.dto';
 import { UpdatePresentationDto } from './dto/update-presentation.dto';
 import { PrismaService } from 'src/prisma.service';
+import { PresentationFiltersDto } from './dto/presentation-filters.dto';
 
 @Injectable()
 export class PresentationService {
@@ -12,9 +13,12 @@ export class PresentationService {
     });
   }
 
-  findAll() {
+  findAll(filters?: PresentationFiltersDto) {
     return this.prismaService.presentation.findMany({
       include: { topic: true },
+      where: {
+        ...(filters?.topicId && { topicId: filters.topicId }),
+      },
     });
   }
 
