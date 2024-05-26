@@ -28,17 +28,15 @@ export class GroupService {
           },
         },
       },
-      ...(Object.keys(filters!).length && {
-        where: {
-          ...(filters.teacherId && { teacherId: filters.teacherId }),
-          ...(filters.username && {
-            users: { some: { username: filters.username } },
-          }),
-          ...(filters.search && {
-            title: { contains: filters.search, mode: 'insensitive' },
-          }),
-        },
-      }),
+      where: {
+        ...(filters.teacherId && { teacherId: filters.teacherId }),
+        ...(filters.username && {
+          users: { some: { username: filters.username } },
+        }),
+        ...(filters.search && {
+          title: { contains: filters.search, mode: 'insensitive' },
+        }),
+      },
     });
   }
 

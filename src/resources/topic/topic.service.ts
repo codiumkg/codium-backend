@@ -23,14 +23,12 @@ export class TopicService {
   async findAll(user: User, filters?: TopicFiltersDto) {
     const [topics, topicContents] = await Promise.all([
       this.prismaService.topic.findMany({
-        ...(Object.keys(filters!).length && {
-          where: {
-            ...(filters.sectionId && { sectionId: filters.sectionId }),
-            ...(filters.search && {
-              title: { contains: filters.search, mode: 'insensitive' },
-            }),
-          },
-        }),
+        where: {
+          ...(filters.sectionId && { sectionId: filters.sectionId }),
+          ...(filters.search && {
+            title: { contains: filters.search, mode: 'insensitive' },
+          }),
+        },
         include: { section: true },
       }),
       this.topicContentService.findAll({ user }),

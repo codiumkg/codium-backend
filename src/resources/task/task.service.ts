@@ -78,14 +78,12 @@ export class TaskService {
   async findAll(user: User, filters?: TaskFiltersDto) {
     const tasks = await this.prismaService.task.findMany({
       include: { answers: true, topic: true },
-      ...(Object.keys(filters!).length && {
-        where: {
-          ...(filters.search && {
-            text: { contains: filters.search, mode: 'insensitive' },
-          }),
-          ...(filters.topicId && { topicId: filters.topicId }),
-        },
-      }),
+      where: {
+        ...(filters.search && {
+          text: { contains: filters.search, mode: 'insensitive' },
+        }),
+        ...(filters.topicId && { topicId: filters.topicId }),
+      },
     });
 
     if (user.role !== Role.STUDENT) {
