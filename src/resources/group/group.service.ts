@@ -28,7 +28,7 @@ export class GroupService {
           },
         },
       },
-      ...(Object.keys(filters).length && {
+      ...(Object.keys(filters!).length && {
         where: {
           ...(filters.teacherId && { teacherId: filters.teacherId }),
           ...(filters.username && {

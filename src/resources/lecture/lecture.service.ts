@@ -40,7 +40,7 @@ export class LectureService {
   findAll(filters?: LectureFiltersDto) {
     return this.prismaService.lecture.findMany({
       include: { topic: true },
-      ...(Object.keys(filters).length && {
+      ...(Object.keys(filters!).length && {
         where: {
           ...(filters.search && {
             OR: [

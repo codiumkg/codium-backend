@@ -20,7 +20,7 @@ export class SectionService {
   async findAll(filters?: SectionFiltersDto, user?: User) {
     const sections = await this.prismaService.section.findMany({
       include: { subject: true },
-      ...(Object.keys(filters).length && {
+      ...(Object.keys(filters!).length && {
         where: {
           ...(filters.search && {
             title: { contains: filters.search, mode: 'insensitive' },
