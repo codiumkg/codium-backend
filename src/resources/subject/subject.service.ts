@@ -13,7 +13,9 @@ export class SubjectService {
     return this.prismaService.subject.findMany({
       ...(Object.keys(filters).length && {
         where: {
-          ...(filters.search && { title: { contains: filters.search } }),
+          ...(filters.search && {
+            title: { contains: filters.search, mode: 'insensitive' },
+          }),
         },
       }),
     });

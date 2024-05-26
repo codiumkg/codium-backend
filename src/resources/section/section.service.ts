@@ -22,7 +22,9 @@ export class SectionService {
       include: { subject: true },
       ...(Object.keys(filters).length && {
         where: {
-          ...(filters.search && { title: { contains: filters.search } }),
+          ...(filters.search && {
+            title: { contains: filters.search, mode: 'insensitive' },
+          }),
           ...(filters.subjectId && { subjectId: filters.subjectId }),
         },
       }),

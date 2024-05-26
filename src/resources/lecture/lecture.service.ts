@@ -44,8 +44,8 @@ export class LectureService {
         where: {
           ...(filters.search && {
             OR: [
-              { title: { contains: filters.search } },
-              { content: { contains: filters.search } },
+              { title: { contains: filters.search, mode: 'insensitive' } },
+              { content: { contains: filters.search, mode: 'insensitive' } },
             ],
           }),
           ...(filters.topicId && { topicId: filters.topicId }),

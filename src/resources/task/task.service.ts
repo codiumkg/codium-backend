@@ -80,7 +80,9 @@ export class TaskService {
       include: { answers: true, topic: true },
       ...(Object.keys(filters).length && {
         where: {
-          ...(filters.search && { text: { contains: filters.search } }),
+          ...(filters.search && {
+            text: { contains: filters.search, mode: 'insensitive' },
+          }),
           ...(filters.topicId && { topicId: filters.topicId }),
         },
       }),

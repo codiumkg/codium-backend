@@ -34,7 +34,9 @@ export class GroupService {
           ...(filters.username && {
             users: { some: { username: filters.username } },
           }),
-          ...(filters.search && { title: { contains: filters.search } }),
+          ...(filters.search && {
+            title: { contains: filters.search, mode: 'insensitive' },
+          }),
         },
       }),
     });

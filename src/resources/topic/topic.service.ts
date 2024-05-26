@@ -26,7 +26,9 @@ export class TopicService {
         ...(Object.keys(filters).length && {
           where: {
             ...(filters.sectionId && { sectionId: filters.sectionId }),
-            ...(filters.search && { title: { contains: filters.search } }),
+            ...(filters.search && {
+              title: { contains: filters.search, mode: 'insensitive' },
+            }),
           },
         }),
         include: { section: true },
