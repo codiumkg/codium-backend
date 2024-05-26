@@ -1,4 +1,5 @@
-import { IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class TaskFiltersDto {
   @IsString()
@@ -6,5 +7,7 @@ export class TaskFiltersDto {
   search?: string;
 
   @IsOptional()
+  @Transform(({ value }) => parseInt(value, 10))
+  @IsInt()
   topicId?: number;
 }
