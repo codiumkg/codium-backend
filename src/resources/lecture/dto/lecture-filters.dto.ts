@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class LectureFiltersDto {
   @IsOptional()
@@ -6,7 +6,5 @@ export class LectureFiltersDto {
   search?: string;
 
   @IsOptional()
-  @IsNumber()
-  @IsPositive()
   topicId?: number;
 }

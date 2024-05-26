@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class SectionFiltersDto {
   @IsOptional()
@@ -6,7 +6,5 @@ export class SectionFiltersDto {
   search?: string;
 
   @IsOptional()
-  @IsNumber()
-  @IsPositive()
   subjectId?: number;
 }
