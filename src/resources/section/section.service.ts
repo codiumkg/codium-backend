@@ -17,17 +17,18 @@ export class SectionService {
     return this.prismaService.section.create({ data: section });
   }
 
-  async findAll(filters?: SectionFiltersDto, user?: User) {
+  async findAll(user: User, filters?: SectionFiltersDto) {
     const sections = await this.prismaService.section.findMany({
       include: { subject: true },
-      ...(Object.keys(filters!).length && {
-        where: {
-          ...(filters.search && {
-            title: { contains: filters.search, mode: 'insensitive' },
-          }),
-          ...(filters.subjectId && { subjectId: filters.subjectId }),
-        },
-      }),
+      ...(filters &&
+        Object.keys(filters).length && {
+          where: {
+            ...(filters.search && {
+              title: { contains: filters.search, mode: 'insensitive' },
+            }),
+            ...(filters.subjectId && { subjectId: filters.subjectId }),
+          },
+        }),
     });
 
     const topics = await this.topicService.findAll(user);

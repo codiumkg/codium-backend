@@ -51,15 +51,12 @@ export class SectionController {
     const userdata: IUserData = this.jwtService.decode(token) as IUserData;
 
     if (userdata.group && userdata.role === Role.STUDENT) {
-      return this.sectionService.findAll(
-        {
-          subjectId: userdata.group.subjectId,
-        },
-        user,
-      );
+      return this.sectionService.findAll(user, {
+        subjectId: userdata.group.subjectId,
+      });
     }
 
-    return this.sectionService.findAll(filtersDto);
+    return this.sectionService.findAll(user, filtersDto);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -72,10 +72,9 @@ export class UserService {
   async getProgress(user: User) {
     const group = await this.groupService.findOne(user.groupId);
 
-    const sections = await this.sectionService.findAll(
-      { subjectId: group.subjectId },
-      user,
-    );
+    const sections = await this.sectionService.findAll(user, {
+      subjectId: group.subjectId,
+    });
 
     const topicsBySection = await Promise.all(
       sections.map((section) =>
