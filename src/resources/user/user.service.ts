@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { Lecture, Role, Task, TopicContentType, User } from '@prisma/client';
+import { Lecture, Task, TopicContentType, User } from '@prisma/client';
 import { CreateUserDto } from 'src/resources/user/dto/user.dto';
-import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicService } from '../topic/topic.service';
 import { TopicContentService } from '../topic-content/topic-content.service';
 import { GroupService } from '../group/group.service';
 import { SectionService } from '../section/section.service';
 import * as bcrypt from 'bcrypt';
+import { UserFiltersDto } from './dto/user-filters.dto';
 
 @Injectable()
 export class UserService {
@@ -21,27 +21,32 @@ export class UserService {
     this.prismaService = prismaService;
   }
 
-  async getUsers(params?: {
-    offset?: number;
-    limit?: number;
-    role?: Role;
-    groupId?: number;
-  }) {
+  async getUsers(filters?: UserFiltersDto) {
     try {
       const users = await this.prismaService.user.findMany({
-        ...paginationOptions(params?.offset, params?.limit),
-        ...(params?.role && {
-          where: {
-            role: {
-              equals: params?.role,
-            },
-          },
-        }),
-        ...(params?.groupId && {
-          where: {
-            groupId: params?.groupId,
-          },
-        }),
+        where: {
+          ...(filters?.search && {
+            OR: [
+              { username: { contains: filters.search, mode: 'insensitive' } },
+              {
+                profile: {
+                  firstName: { contains: filters.search, mode: 'insensitive' },
+                },
+              },
+              {
+                profile: {
+                  lastName: { contains: filters.search, mode: 'insensitive' },
+                },
+              },
+            ],
+          }),
+          ...(filters?.groupId && {
+            groupId: filters.groupId,
+          }),
+          ...(filters?.role && {
+            role: filters.role,
+          }),
+        },
         include: { profile: true, group: true },
       });
 

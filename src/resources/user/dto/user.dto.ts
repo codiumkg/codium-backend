@@ -49,9 +49,3 @@ export class CreateUserDto {
 
   role: Role;
 }
-
-export class UserFiltersDto {
-  @IsOptional()
-  @IsEnum(Role)
-  role: Role;
-}
