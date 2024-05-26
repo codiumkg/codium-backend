@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskUserAnswerDto } from './dto/create-task-user-answer.dto';
 import { UpdateTaskUserAnswerDto } from './dto/update-task-user-answer.dto';
 import { PrismaService } from 'src/prisma.service';
+import { TaskUserAnswerFiltersDto } from './dto/task-user-answer-filters.dto';
 
 @Injectable()
 export class TaskUserAnswerService {
@@ -36,9 +37,15 @@ export class TaskUserAnswerService {
     });
   }
 
-  findAll(params?: { topicId: number }) {
+  findAll(filters?: TaskUserAnswerFiltersDto) {
     return this.prismaService.taskUserAnswer.findMany({
-      ...(params?.topicId && { where: { task: { topicId: params.topicId } } }),
+      ...(Object.keys(filters).length && {
+        where: {
+          ...(filters.topicId && { task: { topicId: filters.topicId } }),
+          ...(filters.userId && { userId: filters.userId }),
+          ...(filters.taskId && { taskId: filters.taskId }),
+        },
+      }),
       include: { answer: true, task: { include: { topic: true } } },
     });
   }

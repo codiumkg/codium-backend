@@ -2,10 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma.service';
-import { paginationOptions } from 'src/constants/transactionOptions';
 import { AnswerService } from '../answer/answer.service';
 import { Role, TopicContentType, User } from '@prisma/client';
 import { TaskUserAnswerService } from '../task-user-answer/task-user-answer.service';
+import { TaskFiltersDto } from './dto/task-filters.dto';
 
 @Injectable()
 export class TaskService {
@@ -75,18 +75,15 @@ export class TaskService {
     return answer;
   }
 
-  async findAll({
-    offset,
-    limit,
-    user,
-  }: {
-    offset?: number;
-    limit?: number;
-    user: User;
-  }) {
+  async findAll(user: User, filters?: TaskFiltersDto) {
     const tasks = await this.prismaService.task.findMany({
       include: { answers: true, topic: true },
-      ...paginationOptions(offset, limit),
+      ...(Object.keys(filters).length && {
+        where: {
+          ...(filters.search && { text: { contains: filters.search } }),
+          ...(filters.topicId && { topicId: filters.topicId }),
+        },
+      }),
     });
 
     if (user.role !== Role.STUDENT) {

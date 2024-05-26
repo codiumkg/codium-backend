@@ -6,8 +6,8 @@ import {
 import { CreateLectureDto } from './dto/create-lecture.dto';
 import { UpdateLectureDto } from './dto/update-lecture.dto';
 import { PrismaService } from 'src/prisma.service';
-import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicContentType } from '@prisma/client';
+import { LectureFiltersDto } from './dto/lecture-filters.dto';
 
 @Injectable()
 export class LectureService {
@@ -37,32 +37,21 @@ export class LectureService {
       });
   }
 
-  findAll(offset?: number, limit?: number, title?: string) {
+  findAll(filters?: LectureFiltersDto) {
     return this.prismaService.lecture.findMany({
       include: { topic: true },
-      ...(title && { where: { title } }),
-      ...paginationOptions(offset, limit),
+      ...(Object.keys(filters).length && {
+        where: {
+          ...(filters.search && {
+            OR: [
+              { title: { contains: filters.search } },
+              { content: { contains: filters.search } },
+            ],
+          }),
+          ...(filters.topicId && { topicId: filters.topicId }),
+        },
+      }),
     });
-  }
-
-  async findAllByTopic(
-    topicId: number,
-    offset?: number,
-    limit?: number,
-    title?: string,
-  ) {
-    const lectures = await this.prismaService.lecture.findMany({
-      where: { topicId },
-      include: { topic: true },
-      ...(title && { where: { title } }),
-      ...paginationOptions(offset, limit),
-    });
-
-    if (!lectures) {
-      throw new BadRequestException('Failed to load lectures');
-    }
-
-    return lectures;
   }
 
   async findOne(id: number) {

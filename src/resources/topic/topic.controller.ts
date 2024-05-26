@@ -17,10 +17,10 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role, User } from '@prisma/client';
-import PaginationParams from 'src/interfaces/paginationParams';
 import { TopicContentService } from '../topic-content/topic-content.service';
 import { TopicContentOrderDto } from './dto/topic-content-order.dto';
 import { GetUser } from 'src/decorators/user.decorator';
+import { TopicFiltersDto } from './dto/topic-filters.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('topics')
@@ -38,19 +38,8 @@ export class TopicController {
   }
 
   @Get()
-  findAll(
-    @Query('sectionId') sectionId: string,
-    @Query() { offset, limit }: PaginationParams,
-    @Query('title') title: string,
-    @GetUser() user: User,
-  ) {
-    return this.topicService.findAll({
-      offset: +offset,
-      limit: +limit,
-      sectionId: +sectionId,
-      title,
-      user,
-    });
+  findAll(@Query() filtersDto: TopicFiltersDto, @GetUser() user: User) {
+    return this.topicService.findAll(filtersDto, user);
   }
 
   @Get(':id/get-content')

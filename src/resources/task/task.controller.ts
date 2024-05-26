@@ -16,8 +16,8 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role, User } from '@prisma/client';
-import PaginationParams from 'src/interfaces/paginationParams';
 import { GetUser } from 'src/decorators/user.decorator';
+import { TaskFiltersDto } from './dto/task-filters.dto';
 
 @Controller('tasks')
 export class TaskController {
@@ -32,8 +32,8 @@ export class TaskController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query() { offset, limit }: PaginationParams, @GetUser() user: User) {
-    return this.taskService.findAll({ offset: +offset, limit: +limit, user });
+  findAll(@Query() filtersDto: TaskFiltersDto, @GetUser() user: User) {
+    return this.taskService.findAll(user, filtersDto);
   }
 
   @UseGuards(JwtAuthGuard)

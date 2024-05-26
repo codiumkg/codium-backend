@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubjectDto } from 'src/resources/subject/dto/subject.dto';
 import { PrismaService } from 'src/prisma.service';
-import { paginationOptions } from 'src/constants/transactionOptions';
+import { SubjectFiltersDto } from './dto/subject-filters.dto';
 
 @Injectable()
 export class SubjectService {
@@ -9,10 +9,13 @@ export class SubjectService {
     this.prismaService = prismaService;
   }
 
-  async getSubjects(offset?: number, limit?: number, title?: string) {
+  async getSubjects(filters?: SubjectFiltersDto) {
     return this.prismaService.subject.findMany({
-      ...(title && { where: { title } }),
-      ...paginationOptions(offset, limit),
+      ...(Object.keys(filters).length && {
+        where: {
+          ...(filters.search && { title: { contains: filters.search } }),
+        },
+      }),
     });
   }
 

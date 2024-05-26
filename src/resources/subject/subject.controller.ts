@@ -15,7 +15,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
-import PaginationParams from 'src/interfaces/paginationParams';
+import { SubjectFiltersDto } from './dto/subject-filters.dto';
 
 @Controller('subjects')
 export class SubjectController {
@@ -25,11 +25,8 @@ export class SubjectController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getSubjects(
-    @Query() { offset, limit }: PaginationParams,
-    @Query('title') title: string,
-  ) {
-    return this.subjectService.getSubjects(+offset, +limit, title);
+  async getSubjects(@Query() filtersDto: SubjectFiltersDto) {
+    return this.subjectService.getSubjects(filtersDto);
   }
 
   @UseGuards(JwtAuthGuard)

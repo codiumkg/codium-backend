@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
 import { PrismaService } from 'src/prisma.service';
-import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicService } from '../topic/topic.service';
 import { User } from '@prisma/client';
+import { SectionFiltersDto } from './dto/section-filters.dto';
 
 @Injectable()
 export class SectionService {
@@ -17,35 +17,18 @@ export class SectionService {
     return this.prismaService.section.create({ data: section });
   }
 
-  findAll(offset?: number, limit?: number, title?: string) {
-    return this.prismaService.section.findMany({
-      include: { subject: true },
-      ...(title && { where: { title } }),
-      ...paginationOptions(offset, limit),
-    });
-  }
-
-  async findAllBySubject({
-    subjectId,
-    offset,
-    limit,
-    title,
-    user,
-  }: {
-    subjectId: number;
-    offset?: number;
-    limit?: number;
-    title?: string;
-    user: User;
-  }) {
+  async findAll(filters?: SectionFiltersDto, user?: User) {
     const sections = await this.prismaService.section.findMany({
-      where: { subjectId },
       include: { subject: true },
-      ...(title && { where: { title } }),
-      ...paginationOptions(offset, limit),
+      ...(Object.keys(filters).length && {
+        where: {
+          ...(filters.search && { title: { contains: filters.search } }),
+          ...(filters.subjectId && { subjectId: filters.subjectId }),
+        },
+      }),
     });
 
-    const topics = await this.topicService.findAll({ user });
+    const topics = await this.topicService.findAll({}, user);
 
     return sections.map((section) => {
       const currentSectionTopics = topics.filter(

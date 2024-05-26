@@ -18,9 +18,9 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
-import PaginationParams from 'src/interfaces/paginationParams';
 import { JwtService } from '@nestjs/jwt';
 import { IUserData } from '../auth/interfaces/tokenData';
+import { LectureFiltersDto } from './dto/lecture-filters.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('lectures')
@@ -38,20 +38,8 @@ export class LectureController {
   }
 
   @Get()
-  findAll(
-    @Query('topicId') topicId: string,
-    @Query() { offset, limit }: PaginationParams,
-    @Query('title') title: string,
-  ) {
-    if (topicId) {
-      return this.lectureService.findAllByTopic(
-        +topicId,
-        +offset,
-        +limit,
-        title,
-      );
-    }
-    return this.lectureService.findAll(+offset, +limit, title);
+  findAll(@Query() filtersDto: LectureFiltersDto) {
+    return this.lectureService.findAll(filtersDto);
   }
 
   @Get(':id')

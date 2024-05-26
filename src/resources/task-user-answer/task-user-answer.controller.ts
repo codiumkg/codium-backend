@@ -16,6 +16,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles-guard/roles-guard.guard';
 import { HasRoles } from '../auth/has-roles.decorator';
 import { Role } from '@prisma/client';
+import { TaskUserAnswerFiltersDto } from './dto/task-user-answer-filters.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('task-user-answer')
@@ -30,8 +31,12 @@ export class TaskUserAnswerController {
   }
 
   @Get()
-  findAll(@Query('topicId') topicId: string) {
-    return this.taskUserAnswerService.findAll({ topicId: +topicId });
+  findAll(@Query() filtersDto: TaskUserAnswerFiltersDto) {
+    if (Object.keys(filtersDto).length) {
+      return this.taskUserAnswerService.findAll(filtersDto);
+    }
+
+    return this.taskUserAnswerService.findAll();
   }
 
   @Get(':id')

@@ -2,10 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 import { PrismaService } from 'src/prisma.service';
-import { paginationOptions } from 'src/constants/transactionOptions';
 import { TopicContentOrderDto } from './dto/topic-content-order.dto';
 import { TopicContentService } from '../topic-content/topic-content.service';
 import { TopicContentType, User } from '@prisma/client';
+import { TopicFiltersDto } from './dto/topic-filters.dto';
 
 @Injectable()
 export class TopicService {
@@ -20,25 +20,16 @@ export class TopicService {
     return this.prismaService.topic.create({ data: createTopicDto });
   }
 
-  async findAll({
-    sectionId,
-    offset,
-    limit,
-    title,
-    user,
-  }: {
-    sectionId?: number;
-    offset?: number;
-    limit?: number;
-    title?: string;
-    user: User;
-  }) {
+  async findAll(filters?: TopicFiltersDto, user?: User) {
     const [topics, topicContents] = await Promise.all([
       this.prismaService.topic.findMany({
-        ...(sectionId && { where: { sectionId } }),
+        ...(Object.keys(filters).length && {
+          where: {
+            ...(filters.sectionId && { sectionId: filters.sectionId }),
+            ...(filters.search && { title: { contains: filters.search } }),
+          },
+        }),
         include: { section: true },
-        ...(title && { where: { title } }),
-        ...paginationOptions(offset, limit),
       }),
       this.topicContentService.findAll({ user }),
     ]);

@@ -2,8 +2,8 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'src/prisma.service';
-import { paginationOptions } from 'src/constants/transactionOptions';
 import { UserService } from '../user/user.service';
+import { GroupFilterDto } from './dto/group-filters.dto';
 
 @Injectable()
 export class GroupService {
@@ -17,17 +17,7 @@ export class GroupService {
     return this.prismaService.group.create({ data: createGroupDto });
   }
 
-  findAll({
-    offset,
-    limit,
-    title,
-    teacherId,
-  }: {
-    offset?: number;
-    limit?: number;
-    title?: string;
-    teacherId?: number;
-  }) {
+  findAll(filters?: GroupFilterDto) {
     return this.prismaService.group.findMany({
       include: {
         subject: true,
@@ -38,19 +28,15 @@ export class GroupService {
           },
         },
       },
-      where: {
-        ...(title && { title }),
-        ...(teacherId && { teacherId }),
-      },
-      ...paginationOptions(offset, limit),
-    });
-  }
-
-  findByUser(username: string, offset?: number, limit?: number) {
-    return this.prismaService.group.findFirst({
-      include: { subject: true, teacher: true },
-      where: { users: { some: { username } } },
-      ...paginationOptions(offset, limit),
+      ...(Object.keys(filters).length && {
+        where: {
+          ...(filters.teacherId && { teacherId: filters.teacherId }),
+          ...(filters.username && {
+            users: { some: { username: filters.username } },
+          }),
+          ...(filters.search && { title: { contains: filters.search } }),
+        },
+      }),
     });
   }
 
