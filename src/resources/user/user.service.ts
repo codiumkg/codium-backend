@@ -79,7 +79,7 @@ export class UserService {
 
     const topicsBySection = await Promise.all(
       sections.map((section) =>
-        this.topicService.findAll({ sectionId: section.id }, user),
+        this.topicService.findAll(user, { sectionId: section.id }),
       ),
     );
 

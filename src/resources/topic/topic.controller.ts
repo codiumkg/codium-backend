@@ -39,7 +39,7 @@ export class TopicController {
 
   @Get()
   findAll(@Query() filtersDto: TopicFiltersDto, @GetUser() user: User) {
-    return this.topicService.findAll(filtersDto, user);
+    return this.topicService.findAll(user, filtersDto);
   }
 
   @Get(':id/get-content')

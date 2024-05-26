@@ -30,7 +30,7 @@ export class SectionService {
       }),
     });
 
-    const topics = await this.topicService.findAll({}, user);
+    const topics = await this.topicService.findAll(user);
 
     return sections.map((section) => {
       const currentSectionTopics = topics.filter(
