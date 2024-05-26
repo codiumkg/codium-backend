@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TaskUserAnswerService } from './task-user-answer.service';
 import { CreateTaskUserAnswerDto } from './dto/create-task-user-answer.dto';
@@ -29,8 +30,8 @@ export class TaskUserAnswerController {
   }
 
   @Get()
-  findAll() {
-    return this.taskUserAnswerService.findAll();
+  findAll(@Query('topicId') topicId: string) {
+    return this.taskUserAnswerService.findAll({ topicId: +topicId });
   }
 
   @Get(':id')

@@ -36,8 +36,9 @@ export class TaskUserAnswerService {
     });
   }
 
-  findAll() {
+  findAll(params?: { topicId: number }) {
     return this.prismaService.taskUserAnswer.findMany({
+      ...(params?.topicId && { where: { task: { topicId: params.topicId } } }),
       include: { answer: true, task: { include: { topic: true } } },
     });
   }
