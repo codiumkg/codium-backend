@@ -41,13 +41,13 @@ export class LectureService {
     return this.prismaService.lecture.findMany({
       include: { topic: true },
       where: {
-        ...(filters.search && {
+        ...(filters?.search && {
           OR: [
             { title: { contains: filters.search, mode: 'insensitive' } },
             { content: { contains: filters.search, mode: 'insensitive' } },
           ],
         }),
-        ...(filters.topicId && { topicId: filters.topicId }),
+        ...(filters?.topicId && { topicId: filters.topicId }),
       },
     });
   }

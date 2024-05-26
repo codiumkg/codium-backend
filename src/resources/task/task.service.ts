@@ -79,10 +79,10 @@ export class TaskService {
     const tasks = await this.prismaService.task.findMany({
       include: { answers: true, topic: true },
       where: {
-        ...(filters.search && {
+        ...(filters?.search && {
           text: { contains: filters.search, mode: 'insensitive' },
         }),
-        ...(filters.topicId && { topicId: filters.topicId }),
+        ...(filters?.topicId && { topicId: filters.topicId }),
       },
     });
 

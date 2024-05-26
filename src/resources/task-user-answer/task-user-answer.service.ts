@@ -40,9 +40,9 @@ export class TaskUserAnswerService {
   findAll(filters?: TaskUserAnswerFiltersDto) {
     return this.prismaService.taskUserAnswer.findMany({
       where: {
-        ...(filters.topicId && { task: { topicId: filters.topicId } }),
-        ...(filters.userId && { userId: filters.userId }),
-        ...(filters.taskId && { taskId: filters.taskId }),
+        ...(filters?.topicId && { task: { topicId: filters.topicId } }),
+        ...(filters?.userId && { userId: filters.userId }),
+        ...(filters?.taskId && { taskId: filters.taskId }),
       },
       include: { answer: true, task: { include: { topic: true } } },
     });

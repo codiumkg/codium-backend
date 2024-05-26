@@ -24,8 +24,8 @@ export class TopicService {
     const [topics, topicContents] = await Promise.all([
       this.prismaService.topic.findMany({
         where: {
-          ...(filters.sectionId && { sectionId: filters.sectionId }),
-          ...(filters.search && {
+          ...(filters?.sectionId && { sectionId: filters.sectionId }),
+          ...(filters?.search && {
             title: { contains: filters.search, mode: 'insensitive' },
           }),
         },

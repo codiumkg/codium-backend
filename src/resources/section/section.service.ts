@@ -21,10 +21,10 @@ export class SectionService {
     const sections = await this.prismaService.section.findMany({
       include: { subject: true },
       where: {
-        ...(filters.search && {
+        ...(filters?.search && {
           title: { contains: filters.search, mode: 'insensitive' },
         }),
-        ...(filters.subjectId && { subjectId: filters.subjectId }),
+        ...(filters?.subjectId && { subjectId: filters.subjectId }),
       },
     });
 

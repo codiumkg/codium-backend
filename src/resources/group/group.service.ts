@@ -29,11 +29,11 @@ export class GroupService {
         },
       },
       where: {
-        ...(filters.teacherId && { teacherId: filters.teacherId }),
-        ...(filters.username && {
+        ...(filters?.teacherId && { teacherId: filters.teacherId }),
+        ...(filters?.username && {
           users: { some: { username: filters.username } },
         }),
-        ...(filters.search && {
+        ...(filters?.search && {
           title: { contains: filters.search, mode: 'insensitive' },
         }),
       },

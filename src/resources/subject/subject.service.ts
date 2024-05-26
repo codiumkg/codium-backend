@@ -12,7 +12,7 @@ export class SubjectService {
   async getSubjects(filters?: SubjectFiltersDto) {
     return this.prismaService.subject.findMany({
       where: {
-        ...(filters.search && {
+        ...(filters?.search && {
           title: { contains: filters.search, mode: 'insensitive' },
         }),
       },
