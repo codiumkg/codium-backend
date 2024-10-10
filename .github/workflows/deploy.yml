@@ -40,7 +40,7 @@ jobs:
           port: 22
           script: |
             cd codium-backend;
-            sudo docker stop codium-backend;
-            sudo docker rm codium-backend;
-            sudo docker pull akmatoff/codium-backend:latest;
-            sudo docker run --restart always -d -p 3000:3000 --name codium-backend akmatoff/codium-backend:latest
+            docker stop codium-backend;
+            docker rm codium-backend;
+            docker pull akmatoff/codium-backend:latest;
+            docker run --restart always -d -p 3000:3000 --name codium-backend akmatoff/codium-backend:latest
