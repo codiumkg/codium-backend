@@ -14,21 +14,12 @@ jobs:
       - name: Setup node and install dependencies
         uses: actions/setup-node@v2
         with:
-          node-version: 18.x
-      - run: yarn install
-      - name: Deploy using SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: 22
-          script: |
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            cd ~/codium-backend
-            git pull
-            yarn install
-            npx prisma generate
-            yarn build
-            pm2 restart backend
+          node-version: '20.17.0'
+
+      - name: Build docker image
+        run: |
+          docker build -t codium-backend --target production .
+      - name: Delete old container
+        run: docker rm -f codium-backend
+      - name: Run docker container
+        run: docker run -d -p 3000:3000 --restart always --name codium-backend codium-backend
