@@ -10,9 +10,12 @@ ARG DATABASE_URL
 ENV JWT_SECRET=${JWT_SECRET}
 ENV DATABASE_URL=${DATABASE_URL}
 
-COPY package*.json /
+RUN corepack enable
+RUN corepack prepare pnpm@9.12.1 --activate
 
-RUN npm install
+COPY package.json pnpm-lock.yaml /codium-backend/
+
+RUN pnpm install --frozen-lockfile
 
 COPY prisma ./prisma
 
@@ -34,7 +37,7 @@ FROM base AS production
 
 WORKDIR /codium-backend
 
-RUN npm run build
+RUN pnpm run build
 
 EXPOSE 3000
 
