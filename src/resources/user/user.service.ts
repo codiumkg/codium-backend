@@ -117,7 +117,7 @@ export class UserService {
       100;
 
     return {
-      percent: Math.round(percent),
+      percent: Math.round(percent) ?? 0,
       completedLectures: completedLectures.map(
         (content) => content.lecture,
       ) as Lecture[],
