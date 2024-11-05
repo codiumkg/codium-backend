@@ -22,6 +22,10 @@ enum TopicContentType {
   LECTURE
 }
 
+enum CodeLanguage {
+  PYTHON
+}
+
 model User {
   id                   Int                    @id @default(autoincrement())
   username             String                 @unique @db.VarChar(30)
@@ -38,6 +42,7 @@ model User {
   LectureUserCompleted LectureUserCompleted[]
   TaskUserCompleted    TaskUserCompleted[]
   TaskUserAnswer       TaskUserAnswer[]
+  UserProject          UserProject[]
 }
 
 model Profile {
@@ -200,4 +205,21 @@ model Presentation {
   filePath String
   topicId  Int
   topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Restrict)
+}
+
+model UserProject {
+  id               Int               @id @default(autoincrement())
+  title            String
+  userId           Int
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userProjectFiles UserProjectFile[]
+}
+
+model UserProjectFile {
+  id            Int          @id @default(autoincrement())
+  filename      String
+  content       String
+  language      CodeLanguage
+  userProjectId Int
+  project       UserProject  @relation(fields: [userProjectId], references: [id], onDelete: Cascade)
 }
