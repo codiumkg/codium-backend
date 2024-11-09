@@ -2,6 +2,8 @@
 
 FROM node:20.17.0-alpine AS base
 
+RUN apk add --no-cache docker-cli
+
 WORKDIR /codium-backend
 
 ARG JWT_SECRET

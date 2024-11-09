@@ -24,6 +24,7 @@ import { TaskUserAnswerModule } from './resources/task-user-answer/task-user-ans
 import { FileModule } from './resources/file/file.module';
 import { MethodologyModule } from './resources/methodology/methodology.module';
 import { PresentationModule } from './resources/presentation/presentation.module';
+import { CodeExecutionGateway } from './gateways/code-execution/code-execution.gateway';
 
 @Module({
   imports: [
@@ -51,6 +52,6 @@ import { PresentationModule } from './resources/presentation/presentation.module
     PresentationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, JwtStrategy],
+  providers: [AppService, PrismaService, JwtStrategy, CodeExecutionGateway],
 })
 export class AppModule {}
