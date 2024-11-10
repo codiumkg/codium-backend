@@ -9,13 +9,13 @@ import {
 import { spawn } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
-@WebSocketGateway()
+@WebSocketGateway(80)
 export class CodeExecutionGateway {
-  @WebSocketServer() io: Server;
+  @WebSocketServer() io: Socket;
 
   @SubscribeMessage('exec')
   async handleExecute(
