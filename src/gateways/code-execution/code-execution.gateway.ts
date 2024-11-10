@@ -13,7 +13,7 @@ import { Socket } from 'socket.io';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
-@WebSocketGateway(80)
+@WebSocketGateway()
 export class CodeExecutionGateway {
   @WebSocketServer() io: Socket;
 
