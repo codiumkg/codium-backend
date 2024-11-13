@@ -20,7 +20,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 })
 export class CodeExecutionGateway implements OnGatewayConnection {
   handleConnection(client: any, ...args: any[]) {
-    console.log('Connecting...');
+    console.log(`${client.id} successfully connected`);
   }
 
   @SubscribeMessage('exec')
@@ -56,8 +56,9 @@ export class CodeExecutionGateway implements OnGatewayConnection {
     try {
       spawn('docker', ['cp', execDir, 'code_executor:/code_executor']);
 
-      const { stdout, stderr } = spawn('docker', [
+      const { stdout, stderr, stdin } = spawn('docker', [
         'exec',
+        '-i',
         'code_executor',
         'python3',
         `/code_executor/${execDirName}/${mainFile}`,
@@ -75,6 +76,19 @@ export class CodeExecutionGateway implements OnGatewayConnection {
           output: data.toString(),
           error: null,
         });
+      });
+
+      stdout.on('close', (code) => {
+        if (code)
+          client.emit('output', {
+            output: `Process exit with code ${code}.`,
+            error: null,
+          });
+      });
+
+      client.on('input', (data: string) => {
+        stdin.write(data + '\n');
+        stdin.end();
       });
     } catch (e) {
       throw new WsException((e as Error).message);
