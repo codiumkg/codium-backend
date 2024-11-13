@@ -22,6 +22,8 @@ async function bootstrap() {
     spawn('docker', [
       'run',
       '-d',
+      '-w',
+      '/code_executor',
       '--name',
       'code_executor',
       'python:3.9-slim',

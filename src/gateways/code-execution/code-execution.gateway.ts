@@ -1,26 +1,32 @@
 import { UseGuards } from '@nestjs/common';
 import {
+  ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { spawn } from 'child_process';
+import { exec, spawn } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Socket } from 'socket.io';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
-@WebSocketGateway()
-export class CodeExecutionGateway {
-  @WebSocketServer() io: Socket;
+// @UseGuards(JwtAuthGuard)
+@WebSocketGateway({
+  cors: { origin: '*' },
+  transports: ['websocket'],
+})
+export class CodeExecutionGateway implements OnGatewayConnection {
+  handleConnection(client: any, ...args: any[]) {
+    console.log('Connecting...');
+  }
 
   @SubscribeMessage('exec')
   async handleExecute(
     @MessageBody() body: { files: { filename: string; content: string }[] },
-    client: Socket,
+    @ConnectedSocket() client: Socket,
   ): Promise<void> {
     const { files } = body;
 
@@ -33,6 +39,7 @@ export class CodeExecutionGateway {
     }
 
     const execDir = path.join(__dirname, `exec_${Date.now()}`);
+    const execDirName = path.basename(execDir);
 
     fs.mkdirSync(execDir);
 
@@ -40,7 +47,7 @@ export class CodeExecutionGateway {
       files.map(async (file) => {
         const { filename, content } = file;
         const filePath = path.join(execDir, filename);
-        await fs.promises.writeFile(filePath, content); // Asynchronously write file
+        await fs.promises.writeFile(filePath, content);
       }),
     );
 
@@ -53,7 +60,7 @@ export class CodeExecutionGateway {
         'exec',
         'code_executor',
         'python3',
-        `/code_executor/${mainFile}`,
+        `/code_executor/${execDirName}/${mainFile}`,
       ]);
 
       stderr.on('data', (data) => {
@@ -72,7 +79,13 @@ export class CodeExecutionGateway {
     } catch (e) {
       throw new WsException((e as Error).message);
     } finally {
-      spawn('docker', ['exec', 'code_executor', 'rm', '-rf', '/code_executor']);
+      spawn('docker', [
+        'exec',
+        'code_executor',
+        'rm',
+        '-rf',
+        '/code_executor/*',
+      ]);
     }
   }
 }
